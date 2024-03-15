@@ -17,7 +17,8 @@
 
 #include <Dynamixel2Arduino.h>
 #include <actuator.h>
-#include "../config/KMR_dxluc_control_tables.hpp"
+#include "../config/KMR_dxluc_structures.hpp"
+#include "../include/KMR_dxluc_hal.hpp"
 
 /**
  * @brief   Class that defines a base robot, handling the communication with Dynamixel motors.
@@ -97,8 +98,7 @@ private:
     int m_protocolVersion;
     int* m_modelNumbers;
     Dynamixel2Arduino* m_dxl;
-
-    ControlTable* MX_64;
+    Hal* m_hal;
 
     void initMotors(const int baudrate, const int protocol_version, int* modes);
     void pingMotors();
@@ -107,12 +107,8 @@ private:
     void setOperatingMode(int id, int mode);
     void setOperatingModes(int* modes);
     float getPositionOffset(int modelNumber);
-
-    ControlTable getControlTable(int modelNumber);
-    Field getControlField(ControlTable motor, ControlTableItem::ControlTableItemIndex item);
     int getModelNumberFromID(int id);
 };
-
 
 
 #endif
