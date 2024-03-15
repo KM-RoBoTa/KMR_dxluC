@@ -218,20 +218,40 @@ float BaseRobot::getPositionOffset(int modelNumber)
     return offset;
 }
 
-/*
 void BaseRobot::setMinAngles(float* minAngles)
 {
-    ControlTable motor;
+    if (m_protocolVersion == 1)
+        writeItem(minAngles, ControlTableItem::CW_ANGLE_LIMIT);
+    else
+        writeItem(minAngles, ControlTableItem::MIN_POSITION_LIMIT);
+}
 
-    if (m_protocolVersion == 1) {
-        for (int i=0; i<m_nbrMotors; i++) {
-            motor = getControlTable(m_modelNumbers[i]);
+void BaseRobot::setMaxAngles(float* maxAngles)
+{
+    if (m_protocolVersion == 1)
+        writeItem(maxAngles, ControlTableItem::CCW_ANGLE_LIMIT);
+    else
+        writeItem(maxAngles, ControlTableItem::MAX_POSITION_LIMIT);
+}
 
-            m_dxl->writeControlTableItem(ControlTableItem::CW_ANGLE_LIMIT, 1, 1);
-        }
-            
-    }
-}*/
+void BaseRobot::setMinVoltage(float* minVoltage)
+{
+    writeItem(minVoltage, ControlTableItem::MIN_VOLTAGE_LIMIT);
+}
+
+void BaseRobot::setMaxVoltage(float* maxVoltage)
+{
+    writeItem(maxVoltage, ControlTableItem::MAX_VOLTAGE_LIMIT);
+}
+
+void BaseRobot::setMaxTorque(float* maxTorque)
+{
+    if (m_protocolVersion == 1)
+        writeItem(maxTorque, ControlTableItem::MAX_TORQUE);
+    else
+        exit(1);
+        // DEBUG PRINT
+}
 
 Field BaseRobot::getControlFieldFromModel(int modelNumber, ControlTableItem::ControlTableItemIndex item)
 {

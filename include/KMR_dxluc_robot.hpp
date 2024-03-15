@@ -36,6 +36,10 @@ public:
     void getCurrentPositions(float* current_positions);
     void getCurrentPositions(int* current_positions);
     void setMinAngles(float* minAngles);
+    void setMaxAngles(float* maxAngles);
+    void setMinVoltage(float* minVoltage);
+    void setMaxVoltage(float* maxVoltage);
+    void setMaxTorque(float* maxTorque);
     Field getControlFieldFromModel(int modelNumber, ControlTableItem::ControlTableItemIndex item);
     void readItem(ControlTableItem::ControlTableItemIndex item, float* read_data);
 
