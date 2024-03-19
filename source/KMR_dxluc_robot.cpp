@@ -1,4 +1,3 @@
-
 /**
  ******************************************************************************
  * @file            KMR_dxl_robot.cpp
@@ -52,8 +51,6 @@
     const int DXL_DIR_PIN = 2; // DYNAMIXEL Shield DIR PIN
 #endif
 
-#define POS_OFFSET_DEFAULT 3.14159265358979323846264338327950288 // M_PI
-#define POS_OFFSET_AX_12A 2.61799387799 // 130 degrees in radians 
 
 
 /**
@@ -63,7 +60,8 @@
  * @param[in]   baudrate Baudrate of the port handling communication with motors
  * @param[in]   hal Previously initialized Hal object
  */
-void BaseRobot::init(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version, int* modes)
+
+BaseRobot::BaseRobot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version, int* modes)
 {
     m_hal = new Hal(protocol_version);
     m_nbrMotors = nbrMotors;
@@ -80,8 +78,9 @@ void BaseRobot::init(const int* ids, const int nbrMotors, const int baudrate, co
     // Use UART port of DYNAMIXEL Shield to debug.
     DEBUG_SERIAL.begin(115200);
     while(!DEBUG_SERIAL);
-}
 
+    m_hal->init(m_ids, m_nbrMotors, m_modelNumbers);
+}
 
 void BaseRobot::initMotors(const int baudrate, const int protocol_version, int* modes)
 {
@@ -179,7 +178,7 @@ void BaseRobot::setGoalPositions(float* goal_positions)
     float offset;
 
     for (int i=0; i<m_nbrMotors; i++) {
-        offset = getPositionOffset(m_modelNumbers[i]);
+        offset = m_hal->getPositionOffset(m_modelNumbers[i]);
         m_dxl->setGoalPosition(m_ids[i], (goal_positions[i]+offset)*180/M_PI, UNIT_DEGREE);
     }
 }
@@ -195,7 +194,7 @@ void BaseRobot::getCurrentPositions(float* current_positions)
     float offset;
 
     for (int i=0; i<m_nbrMotors; i++)  {
-        offset = getPositionOffset(m_modelNumbers[i]);
+        offset = m_hal->getPositionOffset(m_modelNumbers[i]);
         current_positions[i] = m_dxl->getPresentPosition(m_ids[i], UNIT_DEGREE)*M_PI/180 - offset;
     }
 }
@@ -206,17 +205,6 @@ void BaseRobot::getCurrentPositions(int* current_positions)
         current_positions[i] = m_dxl->getPresentPosition(m_ids[i]);
 }
 
-float BaseRobot::getPositionOffset(int modelNumber)
-{
-    float offset = 0;
-
-    if (modelNumber != 12)
-        offset = POS_OFFSET_DEFAULT;
-    else
-        offset = POS_OFFSET_AX_12A;
-            
-    return offset;
-}
 
 void BaseRobot::setMinAngles(float* minAngles)
 {
@@ -253,26 +241,6 @@ void BaseRobot::setMaxTorque(float* maxTorque)
         // DEBUG PRINT
 }
 
-Field BaseRobot::getControlFieldFromModel(int modelNumber, ControlTableItem::ControlTableItemIndex item)
-{
-    ControlTable motor = m_hal->getControlTable(modelNumber);
-    Field field = m_hal->getControlField(motor, item);
-
-    return field;
-}
-
-int BaseRobot::getModelNumberFromID(int id)
-{
-    int i;
-    for (i=0; i<m_nbrMotors; i++) {
-        if (id == m_ids[i])
-            break;
-    }
-
-    return m_modelNumbers[i];
-}
-
-
 void BaseRobot::readItem(ControlTableItem::ControlTableItemIndex item, float* output)
 {
     int modelNbr, id;
@@ -282,21 +250,22 @@ void BaseRobot::readItem(ControlTableItem::ControlTableItemIndex item, float* ou
 
     for (int i=0; i<m_nbrMotors; i++) {
         id = m_ids[i];
-        modelNbr = getModelNumberFromID(id);
+        modelNbr = m_hal->getModelNumberFromID(id);
 
         if (item == ControlTableItem::GOAL_POSITION ||
             item == ControlTableItem::PRESENT_POSITION ||
             item == ControlTableItem::MIN_POSITION_LIMIT || 
             item == ControlTableItem::MAX_POSITION_LIMIT ||
             item == ControlTableItem::HOMING_OFFSET)
-            offset = getPositionOffset(modelNbr);
+            offset = m_hal->getPositionOffset(modelNbr);
         else    
             offset = 0;
 
-        field = getControlFieldFromModel(modelNbr, item);
+        field = m_hal->getControlFieldFromModel(modelNbr, item);
         parameter = m_dxl->readControlTableItem(item, id);
         output[i] = parameter * field.unit - offset; 
     }
 }
+
 
 

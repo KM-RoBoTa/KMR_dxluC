@@ -12,8 +12,12 @@
  ******************************************************************************
  */
 
-#include "../include/KMR_dxluc_hal.hpp"
+#define POS_OFFSET_DEFAULT 3.14159265358979323846264338327950288 // M_PI
+#define POS_OFFSET_AX_12A 2.61799387799 // 130 degrees in radians 
 
+#define MODEL_NBR_AX_12A 12
+
+#include "../include/KMR_dxluc_hal.hpp"
 
 /**
  * @brief       Constructor for BaseRobot
@@ -33,6 +37,12 @@ Hal::Hal(int protocol_version)
     }
 }
 
+void Hal::init(int* ids, int nbrMotors, int* models)
+{
+    m_nbrMotors = nbrMotors;
+    m_ids = ids;
+    m_models =  models;
+}
 
 ControlTable Hal::getControlTable(int modelNumber)
 {
@@ -50,6 +60,27 @@ ControlTable Hal::getControlTable(int modelNumber)
 
     return motor;
 }
+
+
+Field Hal::getControlFieldFromModel(int modelNumber, ControlTableItem::ControlTableItemIndex item)
+{
+    ControlTable motor = getControlTable(modelNumber);
+    Field field = getControlField(motor, item);
+
+    return field;
+}
+
+int Hal::getModelNumberFromID(int id)
+{
+    int i;
+    for (i=0; i<m_nbrMotors; i++) {
+        if (id == m_ids[i])
+            break;
+    }
+
+    return m_models[i];
+}
+
 
 Field Hal::getControlField(ControlTable motor, ControlTableItem::ControlTableItemIndex item)
 {
@@ -161,4 +192,36 @@ Field Hal::getControlField(ControlTable motor, ControlTableItem::ControlTableIte
     return field;
 }
 
+float Hal::getPositionOffset(int modelNumber)
+{
+    float offset = 0;
 
+    if (modelNumber != MODEL_NBR_AX_12A)
+        offset = POS_OFFSET_DEFAULT;
+    else
+        offset = POS_OFFSET_AX_12A;
+            
+    return offset;
+}
+
+float Hal::getSIData(int8_t parameter, int id, ControlTableItem::ControlTableItemIndex item)
+{
+    int modelNbr = getModelNumberFromID(id);
+    float offset = 0;
+    Field field;
+    float data;
+
+    field = getControlFieldFromModel(modelNbr, item);
+    data = parameter * field.unit;
+
+    if (item == ControlTableItem::GOAL_POSITION ||
+        item == ControlTableItem::PRESENT_POSITION ||
+        item == ControlTableItem::MIN_POSITION_LIMIT || 
+        item == ControlTableItem::MAX_POSITION_LIMIT ||
+        item == ControlTableItem::HOMING_OFFSET) {
+        offset = getPositionOffset(modelNbr);
+        data -= offset;
+    }
+
+    return data;
+}

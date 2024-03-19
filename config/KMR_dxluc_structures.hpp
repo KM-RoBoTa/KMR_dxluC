@@ -6,6 +6,7 @@
 struct Field {
     float unit;
     int length;
+    int addr;
 };
 
 struct ControlTable {
