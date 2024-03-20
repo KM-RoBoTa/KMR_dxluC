@@ -28,21 +28,50 @@ Handler::Handler(int* ids, int nbrMotors, ControlTableItem::ControlTableItemInde
         m_models[i] = m_hal->getModelNumberFromID(ids[i]);
     }
 
-    checkmotorCompatibility();
+    m_units = new float(m_nbrMotors);
+    m_offsets = new float (m_nbrMotors);
+
+    checkMotorCompatibility();
 }
    
 
-void Handler::checkmotorCompatibility()
+void Handler::checkMotorCompatibility()
 {
     Field field, ref_field;
-
+    
     ref_field = m_hal->getControlFieldFromModel(m_models[0], m_item);
+    m_units[0] = ref_field.unit;
+
+    // DEBUG
+    m_ref_unit = ref_field.unit;
+
+    if (m_item == ControlTableItem::GOAL_POSITION ||
+        m_item == ControlTableItem::PRESENT_POSITION ||
+        m_item == ControlTableItem::MIN_POSITION_LIMIT || 
+        m_item == ControlTableItem::MAX_POSITION_LIMIT ||
+        m_item == ControlTableItem::HOMING_OFFSET) {
+        m_offsets[0] = m_hal->getPositionOffset(m_models[0]);
+    }
+    else
+        m_offsets[0] = 0;
 
     for(int i=1; i<m_nbrMotors; i++) {
         field = m_hal->getControlFieldFromModel(m_models[i], m_item);
         if (field.addr != ref_field.addr || field.length != ref_field.length) {
             exit(1);
             // COUT
+        }
+        else {
+            m_units[i] = field.unit;
+            if (m_item == ControlTableItem::GOAL_POSITION ||
+                m_item == ControlTableItem::PRESENT_POSITION ||
+                m_item == ControlTableItem::MIN_POSITION_LIMIT || 
+                m_item == ControlTableItem::MAX_POSITION_LIMIT ||
+                m_item == ControlTableItem::HOMING_OFFSET) {
+                m_offsets[i] = m_hal->getPositionOffset(m_models[i]);
+            }
+            else
+                m_offsets[i] = 0;
         }
     }
 

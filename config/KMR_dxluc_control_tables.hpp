@@ -194,7 +194,6 @@ struct MX_64_P2 : ControlTable {
         shutdown.addr = 63;
         shutdown.length = 1;
         shutdown.unit = 1;
-
         torqueEnable.addr = 64;
         torqueEnable.length = 1;
         torqueEnable.unit = 1;

@@ -52,10 +52,10 @@ public:
 
         for (int i=0; i<m_nbrMotors; i++) {
             syncWriteParams.xel[i].id = m_ids[i];
-            parameter = m_hal->getParameter(data[i], m_ids[i], m_item);
+            parameter = ((float)data[i] + m_offsets[i])/m_units[i];
 
             // DEBUG
-            //m_parameter = parameter;
+            m_parameter = parameter;
 
             if (m_length == 4) {
                 syncWriteParams.xel[i].data[0] = DXL_LOBYTE(DXL_LOWORD(parameter));

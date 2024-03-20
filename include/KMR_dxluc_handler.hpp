@@ -36,8 +36,15 @@ public:
     Hal* m_hal;
     int m_addr, m_length;
     Dynamixel2Arduino* m_dxl;
+    float* m_offsets;
+    float* m_units;
 
-    void checkmotorCompatibility();
+    void checkMotorCompatibility();
+
+
+
+    // DEBUG
+    float m_ref_unit;
 
 };
 
