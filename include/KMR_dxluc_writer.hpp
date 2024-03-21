@@ -54,9 +54,6 @@ public:
             syncWriteParams.xel[i].id = m_ids[i];
             parameter = ((float)data[i] + m_offsets[i])/m_units[i];
 
-            // DEBUG
-            m_parameter = parameter;
-
             if (m_length == 4) {
                 syncWriteParams.xel[i].data[0] = DXL_LOBYTE(DXL_LOWORD(parameter));
                 syncWriteParams.xel[i].data[1] = DXL_HIBYTE(DXL_LOWORD(parameter));
@@ -70,26 +67,12 @@ public:
             else if (m_length == 1) {
                 syncWriteParams.xel[i].data[0] = DXL_LOBYTE(DXL_LOWORD(parameter));
             }
-
-            // DEBUG
-            //m_param0 = DXL_LOBYTE(DXL_LOWORD(parameter));
-            //m_param1 = DXL_HIBYTE(DXL_LOWORD(parameter));
-            //m_param2 = DXL_LOBYTE(DXL_HIWORD(parameter));
-            //m_param3 = DXL_HIBYTE(DXL_HIWORD(parameter));
-            //m_lowWord = DXL_LOWORD(parameter);
-            //m_highWord = DXL_HIWORD(parameter);
         }
 
         // Send the prepared data
         m_dxl->syncWrite(syncWriteParams);
 
     }
-
-
-    // DEBUG
-    int32_t m_parameter;
-    uint8_t m_param0, m_param2, m_param3, m_param1;
-    uint8_t m_lowWord, m_highWord;
 
 private:
 

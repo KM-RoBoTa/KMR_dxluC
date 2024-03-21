@@ -28,7 +28,7 @@ class Handler {
 public:
     Handler(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
 
-//protected:
+protected:
     int* m_ids;
     int* m_models;
     int m_nbrMotors;
@@ -40,11 +40,6 @@ public:
     float* m_units;
 
     void checkMotorCompatibility();
-
-
-
-    // DEBUG
-    float m_ref_unit;
 
 };
 

@@ -60,8 +60,7 @@ public:
 
     float getSIData(int8_t parameter, int id, ControlTableItem::ControlTableItemIndex item);
 
-// DEBUG
-//private:
+private:
     ControlTable* MX_64;
 
     int* m_ids;

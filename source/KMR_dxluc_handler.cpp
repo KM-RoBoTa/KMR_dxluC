@@ -42,9 +42,6 @@ void Handler::checkMotorCompatibility()
     ref_field = m_hal->getControlFieldFromModel(m_models[0], m_item);
     m_units[0] = ref_field.unit;
 
-    // DEBUG
-    m_ref_unit = ref_field.unit;
-
     if (m_item == ControlTableItem::GOAL_POSITION ||
         m_item == ControlTableItem::PRESENT_POSITION ||
         m_item == ControlTableItem::MIN_POSITION_LIMIT || 
