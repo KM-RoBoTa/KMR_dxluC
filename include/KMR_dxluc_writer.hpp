@@ -21,10 +21,6 @@
 #include "../config/KMR_dxluc_structures.hpp"
 #include "../include/KMR_dxluc_hal.hpp"
 
-
-#define highWord(w) ((uint8_t) (w) >> 16)
-#define lowWord(w) ((uint8_t) (w) & 0xffff)
-
 #define DXL_LOWORD(l)       ((uint16_t)(((uint64_t)(l)) & 0xffff))
 #define DXL_HIWORD(l)       ((uint16_t)((((uint64_t)(l)) >> 16) & 0xffff))
 #define DXL_LOBYTE(w)       ((uint8_t)(((uint64_t)(w)) & 0xff))
