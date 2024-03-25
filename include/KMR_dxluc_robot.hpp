@@ -43,6 +43,7 @@ public:
     void setMaxVoltage(float* maxVoltage);
     void setMaxTorque(float* maxTorque);
     void readItem(ControlTableItem::ControlTableItemIndex item, float* read_data);
+    int m_nbrMotors;
 
     template <typename T>
     void writeItem(T data, int id, ControlTableItem::ControlTableItemIndex item)
@@ -104,7 +105,6 @@ protected:
 
 private:
     int* m_ids;
-    int m_nbrMotors;
     int m_protocolVersion;
     int* m_modelNumbers;
 

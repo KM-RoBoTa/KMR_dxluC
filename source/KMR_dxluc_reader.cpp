@@ -12,38 +12,49 @@
  ******************************************************************************
  */
 
+#define BUFFER_SIZE 128
+
 #include "../include/KMR_dxluc_reader.hpp"
 
 
 Reader::Reader(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl)
 : Handler(ids, nbrMotors, item, hal, dxl)
 {
-    m_dataFromMotor = new float(nbrMotors);
+    m_fbck_params = new int32_t[nbrMotors]();
+
+    m_readerInfo.is_info_changed = true;
+    m_readerInfo.xel_count = nbrMotors;
+    m_readerInfo.packet.p_buf = new uint8_t[BUFFER_SIZE]();
+    m_readerInfo.packet.buf_capacity = BUFFER_SIZE;
+    m_readerInfo.packet.is_completed = false;
+    m_readerInfo.p_xels = new XELInfoBulkRead_t[nbrMotors]();
+
+    for (int i=0; i<nbrMotors; i++) {
+        m_readerInfo.p_xels[i].addr = m_addr;
+        m_readerInfo.p_xels[i].addr_length = m_length;
+        m_readerInfo.p_xels[i].id = m_ids[i];
+        m_readerInfo.p_xels[i].p_recv_buf = (uint8_t*)&m_fbck_params[i];
+    }
+
 } 
 
-/*
-float* Reader::read()
+void Reader::read(float* fbck)
 {
-    ParamForBulkReadInst_t bulkReadParams;
-    RecvInfoFromStatusInst_t bulkReadResult;
+    int32_t parameter;
+    uint8_t recv_count;
 
-    bulkReadParams.id_count = m_nbrMotors;
-    bulkReadResult.id_count = m_nbrMotors;
+    recv_count = m_dxl->bulkRead(&m_readerInfo);
 
-    for (int i=0; i<m_nbrMotors; i++) {
-        bulkReadParams.xel[i].addr = m_addr;
-        bulkReadParams.xel[i].length = m_length;
-        bulkReadParams.xel[i].id = m_ids[i];
+    // Get the feedback values and convert them to SI units
+    if (recv_count > 0) {
+        for (int i=0; i<m_nbrMotors; i++) {
+            parameter = m_fbck_params[i];
+            fbck[i] = parameter * m_units[i] - m_offsets[i];
+        }
     }
-
-    m_dxl->bulkRead(bulkReadParams, bulkReadResult);
-
-    // Convert received data (parameters) into SI units
-    for (int i=0; i<m_nbrMotors; i++) {
-
-        m_hal->getSIData(bulkReadResult.xel[i].data, bulkReadResult.xel[i].id, m_item);
+    else {
+        for (int i=0; i<m_nbrMotors; i++)
+            fbck[i] = 9999;
+        // error print
     }
-
-}*/
-
-
+}

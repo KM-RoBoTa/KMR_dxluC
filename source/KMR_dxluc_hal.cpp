@@ -28,6 +28,8 @@
  */
 Hal::Hal(int protocol_version)
 {
+    m_protocol = protocol_version;
+
     // Create control tables 
     if (protocol_version == 1) {
         MX_64 = new MX_64_P1();
@@ -202,26 +204,4 @@ float Hal::getPositionOffset(int modelNumber)
         offset = POS_OFFSET_AX_12A;
             
     return offset;
-}
-
-float Hal::getSIData(int8_t parameter, int id, ControlTableItem::ControlTableItemIndex item)
-{
-    int modelNbr = getModelNumberFromID(id);
-    float offset = 0;
-    Field field;
-    float data;
-
-    field = getControlFieldFromModel(modelNbr, item);
-    data = parameter * field.unit;
-
-    if (item == ControlTableItem::GOAL_POSITION ||
-        item == ControlTableItem::PRESENT_POSITION ||
-        item == ControlTableItem::MIN_POSITION_LIMIT || 
-        item == ControlTableItem::MAX_POSITION_LIMIT ||
-        item == ControlTableItem::HOMING_OFFSET) {
-        offset = getPositionOffset(modelNbr);
-        data -= offset;
-    }
-
-    return data;
 }

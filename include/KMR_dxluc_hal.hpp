@@ -28,6 +28,7 @@ class Hal {
 public:
     Hal(int protocol_version);
     void init(int* ids, int nbrMotors, int* models);
+    int m_protocol;
 
     ControlTable getControlTable(int modelNumber);
     Field getControlField(ControlTable motor, ControlTableItem::ControlTableItemIndex item);
@@ -57,9 +58,7 @@ public:
  
         return parameter;
     }
-
-    float getSIData(int8_t parameter, int id, ControlTableItem::ControlTableItemIndex item);
-
+    
 private:
     ControlTable* MX_64;
 

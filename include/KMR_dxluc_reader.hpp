@@ -18,22 +18,19 @@
 #include <Dynamixel2Arduino.h>
 #include <actuator.h>
 #include "KMR_dxluc_handler.hpp"
-#include "../config/KMR_dxluc_structures.hpp"
 #include "../include/KMR_dxluc_hal.hpp"
 
 /**
  * @brief   Class that defines a base robot, handling the communication with Dynamixel motors.
- *          It can be used as is, or inherited by a custom class
  */
 class Reader : public Handler{
 public:
     Reader(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
-
-    float* m_dataFromMotor;
-    float* read();
+    void read(float* fbck);
 
 private:
-
+    InfoBulkReadInst_t m_readerInfo;
+    int32_t* m_fbck_params;
 };
 
 
