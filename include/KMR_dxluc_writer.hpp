@@ -50,25 +50,17 @@ public:
             syncWriteParams.xel[i].id = m_ids[i];
             parameter = ((float)data[i] + m_offsets[i])/m_units[i];
 
-            if (m_length == 4) {
-                syncWriteParams.xel[i].data[0] = DXL_LOBYTE(DXL_LOWORD(parameter));
-                syncWriteParams.xel[i].data[1] = DXL_HIBYTE(DXL_LOWORD(parameter));
-                syncWriteParams.xel[i].data[2] = DXL_LOBYTE(DXL_HIWORD(parameter));
-                syncWriteParams.xel[i].data[3] = DXL_HIBYTE(DXL_HIWORD(parameter));
-            }
-            else if (m_length == 2) {
-                syncWriteParams.xel[i].data[0] = DXL_LOBYTE(DXL_LOWORD(parameter));
-                syncWriteParams.xel[i].data[1] = DXL_HIBYTE(DXL_LOWORD(parameter));
-            }
-            else if (m_length == 1) {
-                syncWriteParams.xel[i].data[0] = DXL_LOBYTE(DXL_LOWORD(parameter));
-            }
+            syncWriteParams.xel[i].data[0] = DXL_LOBYTE(DXL_LOWORD(parameter));
+            syncWriteParams.xel[i].data[1] = DXL_HIBYTE(DXL_LOWORD(parameter));
+            syncWriteParams.xel[i].data[2] = DXL_LOBYTE(DXL_HIWORD(parameter));
+            syncWriteParams.xel[i].data[3] = DXL_HIBYTE(DXL_HIWORD(parameter));
         }
 
         // Send the prepared data
         m_dxl->syncWrite(syncWriteParams);
 
     }
+
 
 private:
 

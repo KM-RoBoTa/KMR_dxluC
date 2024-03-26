@@ -34,8 +34,9 @@ protected:
     int m_nbrMotors;
     ControlTableItem::ControlTableItemIndex m_item;
     Hal* m_hal;
-    int m_addr, m_length;
+
     Dynamixel2Arduino* m_dxl;
+    int m_addr, m_length;
     float* m_offsets;
     float* m_units;
 

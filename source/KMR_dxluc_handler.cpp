@@ -42,11 +42,13 @@ void Handler::checkMotorCompatibility()
     ref_field = m_hal->getControlFieldFromModel(m_models[0], m_item);
     m_units[0] = ref_field.unit;
 
-    if (m_item == ControlTableItem::GOAL_POSITION ||
-        m_item == ControlTableItem::PRESENT_POSITION ||
-        m_item == ControlTableItem::MIN_POSITION_LIMIT || 
-        m_item == ControlTableItem::MAX_POSITION_LIMIT ||
-        m_item == ControlTableItem::HOMING_OFFSET) {
+    if (m_item == ControlTableItem::GOAL_POSITION       ||
+        m_item == ControlTableItem::PRESENT_POSITION    ||
+        m_item == ControlTableItem::MIN_POSITION_LIMIT  || 
+        m_item == ControlTableItem::MAX_POSITION_LIMIT  ||
+        m_item == ControlTableItem::HOMING_OFFSET       ||
+        m_item == ControlTableItem::CW_ANGLE_LIMIT      || 
+        m_item == ControlTableItem::CCW_ANGLE_LIMIT      ) {
         m_offsets[0] = m_hal->getPositionOffset(m_models[0]);
     }
     else
@@ -60,11 +62,13 @@ void Handler::checkMotorCompatibility()
         }
         else {
             m_units[i] = field.unit;
-            if (m_item == ControlTableItem::GOAL_POSITION ||
-                m_item == ControlTableItem::PRESENT_POSITION ||
-                m_item == ControlTableItem::MIN_POSITION_LIMIT || 
-                m_item == ControlTableItem::MAX_POSITION_LIMIT ||
-                m_item == ControlTableItem::HOMING_OFFSET) {
+            if (m_item == ControlTableItem::GOAL_POSITION       ||
+                m_item == ControlTableItem::PRESENT_POSITION    ||
+                m_item == ControlTableItem::MIN_POSITION_LIMIT  || 
+                m_item == ControlTableItem::MAX_POSITION_LIMIT  ||
+                m_item == ControlTableItem::HOMING_OFFSET       ||
+                m_item == ControlTableItem::CW_ANGLE_LIMIT      || 
+                m_item == ControlTableItem::CCW_ANGLE_LIMIT      ) {
                 m_offsets[i] = m_hal->getPositionOffset(m_models[i]);
             }
             else
