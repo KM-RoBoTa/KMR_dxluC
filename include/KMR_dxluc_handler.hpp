@@ -1,14 +1,13 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_robot.hpp
- * @brief           Header for the KMR_dxl_robot.cpp file.
+ * @file            KMR_dxluc_handler.hpp
+ * @brief           Header for the KMR_dxluc_handler.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
  * This code is under MIT licence: https://opensource.org/licenses/MIT
- * @authors  Laura.Paez@KM-RoBota.com, 08/2023
- * @authors  Kamilo.Melo@KM-RoBota.com, 08/2023
- * @authors katarina.lichardova@km-robota.com, 08/2023
+ * @authors kamilo.melo@km-robota.com, 03/2024
+ * @authors katarina.lichardova@km-robota.com, 03/2024
  ******************************************************************************
  */
 
@@ -21,8 +20,11 @@
 #include "../include/KMR_dxluc_hal.hpp"
 
 /**
- * @brief   Class that defines a base robot, handling the communication with Dynamixel motors.
- *          It can be used as is, or inherited by a custom class
+ * @brief   Parent class, to be specialized as a Reader or Writer
+ * @note	This class is not usable by itself, it is a non-specialized sketelon inherited
+ * 			by the child classes Reader and Writer. \n
+ * 			It contains functionalities to check the viability of sync readers/writers 
+ * 			that will be defined in child classes (motor compatibility).
  */
 class Handler {
 public:

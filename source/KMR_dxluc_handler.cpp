@@ -1,19 +1,27 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_robot.cpp
+ * @file            KMR_dxluc_handler.cpp
  * @brief           Defines the Handler class
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
  * This code is under MIT licence: https://opensource.org/licenses/MIT
- * @authors  Laura.Paez@KM-RoBota.com, 08/2023
- * @authors  Kamilo.Melo@KM-RoBota.com, 08/2023
- * @authors katarina.lichardova@km-robota.com, 08/2023
+ * @authors kamilo.melo@km-robota.com, 03/2024
+ * @authors katarina.lichardova@km-robota.com, 03/2024
  ******************************************************************************
  */
 
 #include "../include/KMR_dxluc_handler.hpp"
 
+
+/**
+ * @brief       Constructor for a Handler, parent class for the Writer and Reader classes
+ * @param[in]   ids List of IDs of the motors handled by this specific handler
+ * @param[in]   nbrMotors Number of motors handled by this handler 
+ * @param[in]   item Control field handled by this handler
+ * @param[in]   hal Pointer to the previously created Hal object
+ * @param[in]   dxl Pointer to the previously created Dynamixel2Arduino object
+ */
 Handler::Handler(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl)
 {
     m_nbrMotors = nbrMotors;
@@ -21,8 +29,10 @@ Handler::Handler(int* ids, int nbrMotors, ControlTableItem::ControlTableItemInde
     m_hal = hal;
     m_dxl = dxl;
 
-    m_ids = new int(m_nbrMotors);
+    m_ids = new int(m_nbrMotors); 
     m_models = new int(m_nbrMotors);
+
+    // Get the motor model numbers
     for (int i=0; i<m_nbrMotors; i++) {
         m_ids[i] = ids[i];
         m_models[i] = m_hal->getModelNumberFromID(ids[i]);
@@ -35,6 +45,10 @@ Handler::Handler(int* ids, int nbrMotors, ControlTableItem::ControlTableItemInde
 }
    
 
+/**
+ * @brief       Check if the motors are compatible (address + byte size of the handler's control field)
+ * @note        Also populate the position offsets and units vectors
+ */
 void Handler::checkMotorCompatibility()
 {
     Field field, ref_field;

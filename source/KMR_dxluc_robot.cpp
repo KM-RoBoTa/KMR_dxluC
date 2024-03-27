@@ -6,9 +6,8 @@
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
  * This code is under MIT licence: https://opensource.org/licenses/MIT
- * @authors  Laura.Paez@KM-RoBota.com, 08/2023
- * @authors  Kamilo.Melo@KM-RoBota.com, 08/2023
- * @authors katarina.lichardova@km-robota.com, 08/2023
+ * @authors kamilo.melo@km-robota.com, 03/2024
+ * @authors katarina.lichardova@km-robota.com, 03/2024
  ******************************************************************************
  */
 
@@ -55,13 +54,12 @@
 
 /**
  * @brief       Constructor for BaseRobot
- * @param[in]   all_ids List of IDs of all the motors in the robot
- * @param[in]   port_name Name of the port handling the communication with motors
+ * @param[in]   ids List of IDs of all the motors in the robot
+ * @param[in]   nbrMotors Number of motors in the robot
  * @param[in]   baudrate Baudrate of the port handling communication with motors
- * @param[in]   hal Previously initialized Hal object
+ * @param[in]   protocol_version Dynamixel protocol version (1 or 2)
  */
-
-BaseRobot::BaseRobot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version, int* modes)
+BaseRobot::BaseRobot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version)
 {
     m_hal = new Hal(protocol_version);
     m_nbrMotors = nbrMotors;
@@ -73,7 +71,7 @@ BaseRobot::BaseRobot(const int* ids, const int nbrMotors, const int baudrate, co
     for (int i=0; i<nbrMotors; i++)
         m_ids[i] = ids[i];
 
-    initMotors(baudrate, protocol_version, modes);
+    initMotors(baudrate, protocol_version);
 
     // Use UART port of DYNAMIXEL Shield to debug.
     DEBUG_SERIAL.begin(115200);
@@ -82,17 +80,25 @@ BaseRobot::BaseRobot(const int* ids, const int nbrMotors, const int baudrate, co
     m_hal->init(m_ids, m_nbrMotors, m_modelNumbers);
 }
 
-void BaseRobot::initMotors(const int baudrate, const int protocol_version, int* modes)
+
+/**
+ * @brief       Initialize the motors
+ * @param[in]   baudrate Baudrate of the port handling communication with motors
+ * @param[in]   protocol_version Dynamixel protocol version (1 or 2)
+ */
+void BaseRobot::initMotors(const int baudrate, const int protocol_version)
 {
     m_dxl = new Dynamixel2Arduino(DXL_SERIAL, DXL_DIR_PIN);
 
     initComm(baudrate, protocol_version);
-    setOperatingModes(modes);
     delay(1000);
     pingMotors();
 }
 
 
+/**
+ * @brief       Ping all motors to check the communication is working
+ */
 void BaseRobot::pingMotors()
 {
     for (int i=0; i<m_nbrMotors; i++) {
@@ -112,6 +118,12 @@ void BaseRobot::pingMotors()
     }
 }
 
+
+/**
+ * @brief       Initialize the communication with the motors
+ * @param[in]   baudrate Baudrate of the port handling communication with motors
+ * @param[in]   protocol_version Dynamixel protocol version (1 or 2)
+ */
 void BaseRobot::initComm(const int baudrate, const int protocol_version)
 {
     // Set port baudrate
@@ -134,137 +146,136 @@ void BaseRobot::initComm(const int baudrate, const int protocol_version)
     disableMotors();
 }
 
-void BaseRobot::setOperatingMode(int mode)
-{
-    for (int i=0; i<m_nbrMotors; i++)
-        m_dxl->setOperatingMode(m_ids[i], mode);
-}
 
-void BaseRobot::setOperatingMode(int id, int mode)
-{
-    m_dxl->setOperatingMode(id, mode);
-}
+/*
+******************************************************************************
+ *                         Enable/disable motors
+ ****************************************************************************/
 
-void BaseRobot::setOperatingModes(int* modes)
-{
-    for (int i=0; i<m_nbrMotors; i++)
-        m_dxl->setOperatingMode(m_ids[i], modes[i]);
-}
-
+/**
+ * @brief   Enable all motors
+ */
 void BaseRobot::enableMotors()
 {
     for (int i=0; i<m_nbrMotors; i++)
         m_dxl->torqueOn(m_ids[i]);
 }
 
+/**
+ * @brief   Disable all motors
+ */
 void BaseRobot::disableMotors()
 {
     for (int i=0; i<m_nbrMotors; i++)
         m_dxl->torqueOff(m_ids[i]);
 }
 
+/**
+ * @brief   Enable a specific motor
+ */
 void BaseRobot::enableMotor(int id)
 {
     m_dxl->torqueOn(id);
 }
 
+/**
+ * @brief   Disable a specific motor
+ */
 void BaseRobot::disableMotor(int id)
 {
     m_dxl->torqueOff(id);
 }
 
-void BaseRobot::setGoalPositions(float* goal_positions)
-{
-    float offset;
 
-    for (int i=0; i<m_nbrMotors; i++) {
-        offset = m_hal->getPositionOffset(m_modelNumbers[i]);
-        m_dxl->setGoalPosition(m_ids[i], (goal_positions[i]+offset)*180/M_PI, UNIT_DEGREE);
-    }
-}
+/*
+******************************************************************************
+ *                         EEPROM writing functions
+ ****************************************************************************/
 
-void BaseRobot::setGoalPositions(int* goal_positions)
-{
-    for (int i=0; i<m_nbrMotors; i++)
-        m_dxl->setGoalPosition(m_ids[i], goal_positions[i]);
-}
-
-void BaseRobot::getCurrentPositions(float* current_positions)
-{
-    float offset;
-
-    for (int i=0; i<m_nbrMotors; i++)  {
-        offset = m_hal->getPositionOffset(m_modelNumbers[i]);
-        current_positions[i] = m_dxl->getPresentPosition(m_ids[i], UNIT_DEGREE)*M_PI/180 - offset;
-    }
-}
-
-void BaseRobot::getCurrentPositions(int* current_positions)
-{
-    for (int i=0; i<m_nbrMotors; i++)
-        current_positions[i] = m_dxl->getPresentPosition(m_ids[i]);
-}
-
-
+/**
+ * @brief       Set the minimum angle limits for all motors
+ * @param[in]   minAngles Minimum angle limit for each motor [rad]
+ */
 void BaseRobot::setMinAngles(float* minAngles)
 {
     if (m_protocolVersion == 1)
-        writeItem(minAngles, ControlTableItem::CW_ANGLE_LIMIT);
+        EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::CW_ANGLE_LIMIT, m_hal, m_dxl);
     else
-        writeItem(minAngles, ControlTableItem::MIN_POSITION_LIMIT);
+        EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MIN_POSITION_LIMIT, m_hal, m_dxl);
+
+    EEPROM_writer->write(minAngles);
+    delay(30);
 }
 
+/**
+ * @brief       Set the maximum angle limits for all motors
+ * @param[in]   maxAngles Maximum angle limit for each motor [rad]
+ */
 void BaseRobot::setMaxAngles(float* maxAngles)
 {
     if (m_protocolVersion == 1)
-        writeItem(maxAngles, ControlTableItem::CCW_ANGLE_LIMIT);
+        EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::CCW_ANGLE_LIMIT, m_hal, m_dxl);
     else
-        writeItem(maxAngles, ControlTableItem::MAX_POSITION_LIMIT);
+        EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MAX_POSITION_LIMIT, m_hal, m_dxl);
+
+    EEPROM_writer->write(maxAngles);
+    delay(30);
 }
 
-void BaseRobot::setMinVoltage(float* minVoltage)
+/**
+ * @brief       Set the minimum voltage limits for all motors
+ * @param[in]   minVoltages Minimum voltage limit for each motor [V]
+ */
+void BaseRobot::setMinVoltages(float* minVoltages)
 {
-    writeItem(minVoltage, ControlTableItem::MIN_VOLTAGE_LIMIT);
+    EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MIN_VOLTAGE_LIMIT, m_hal, m_dxl);
+
+    EEPROM_writer->write(minVoltages);
+    delay(30);
 }
 
-void BaseRobot::setMaxVoltage(float* maxVoltage)
+/**
+ * @brief       Set the maximum voltage limits for all motors
+ * @param[in]   maxVoltages Maximum voltage limit for each motor [V]
+ */
+void BaseRobot::setMaxVoltages(float* maxVoltages)
 {
-    writeItem(maxVoltage, ControlTableItem::MAX_VOLTAGE_LIMIT);
+    EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MAX_VOLTAGE_LIMIT, m_hal, m_dxl);
+
+    EEPROM_writer->write(maxVoltages);
+    delay(30);
 }
 
-void BaseRobot::setMaxTorque(float* maxTorque)
+
+/**
+ * @brief       Set the maximum torque limits for all motors
+ * @note        !! Only supported in protocol 1 !!
+ * @param[in]   maxTorques Maximum torque limit for each motor [Nm]
+ */
+void BaseRobot::setMaxTorques(float* maxTorques)
 {
-    if (m_protocolVersion == 1)
-        writeItem(maxTorque, ControlTableItem::MAX_TORQUE);
+    if (m_protocolVersion == 1)  {
+        EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MAX_TORQUE, m_hal, m_dxl);
+        EEPROM_writer->write(maxTorques);
+        delay(30);
+    }
     else
         exit(1);
         // DEBUG PRINT
 }
 
-void BaseRobot::readItem(ControlTableItem::ControlTableItemIndex item, float* output)
+/** 
+ * @brief       Set the operating modes of all motors
+ * @param[in]   modes Control modes for each motor
+ * @note        Mode = 
+ * @todo finish modes
+ */
+void BaseRobot::setOperatingModes(int* modes)
 {
-    int modelNbr, id;
-    Field field;
-    int32_t parameter;
-    float offset = 0; 
+    for (int i=0; i<m_nbrMotors; i++)
+        m_dxl->setOperatingMode(m_ids[i], modes[i]);
 
-    for (int i=0; i<m_nbrMotors; i++) {
-        id = m_ids[i];
-        modelNbr = m_hal->getModelNumberFromID(id);
-
-        if (item == ControlTableItem::GOAL_POSITION ||
-            item == ControlTableItem::PRESENT_POSITION ||
-            item == ControlTableItem::MIN_POSITION_LIMIT || 
-            item == ControlTableItem::MAX_POSITION_LIMIT ||
-            item == ControlTableItem::HOMING_OFFSET)
-            offset = m_hal->getPositionOffset(modelNbr);
-        else    
-            offset = 0;
-
-        field = m_hal->getControlFieldFromModel(modelNbr, item);
-        parameter = m_dxl->readControlTableItem(item, id);
-        output[i] = parameter * field.unit - offset; 
-    }
+    delay(30);
 }
 
 

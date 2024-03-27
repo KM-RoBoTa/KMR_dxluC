@@ -6,9 +6,8 @@
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
  * This code is under MIT licence: https://opensource.org/licenses/MIT
- * @authors  Laura.Paez@KM-RoBota.com, 08/2023
- * @authors  Kamilo.Melo@KM-RoBota.com, 08/2023
- * @authors katarina.lichardova@km-robota.com, 08/2023
+ * @authors kamilo.melo@km-robota.com, 03/2024
+ * @authors katarina.lichardova@km-robota.com, 03/2024
  ******************************************************************************
  */
 
@@ -20,15 +19,17 @@
 #include "../include/KMR_dxluc_hal.hpp"
 
 /**
- * @brief       Constructor for BaseRobot
- * @param[in]   all_ids List of IDs of all the motors in the robot
- * @param[in]   port_name Name of the port handling the communication with motors
- * @param[in]   baudrate Baudrate of the port handling communication with motors
- * @param[in]   hal Previously initialized Hal object
+ * @brief       Constructor for Hal
+ * @param[in]   protocol_version Dynamixel protocol version (1 or 2) 
  */
 Hal::Hal(int protocol_version)
 {
-    m_protocol = protocol_version;
+    if (protocol_version == 1 || protocol_version == 2)
+        m_protocol = protocol_version;
+    else {
+        exit(1);
+        // print error
+    }
 
     // Create control tables 
     if (protocol_version == 1) {
@@ -39,6 +40,13 @@ Hal::Hal(int protocol_version)
     }
 }
 
+
+/**
+ * @brief       Initialize the Hal - called by BaseRobot in its cstr
+ * @param[in]   ids List of IDs of all the motors in the robot
+ * @param[in]   nbrMotors Number of motors in the robot
+ * @param[in]   models List of model numbers of each motor, gotten during the motors ping
+ */
 void Hal::init(int* ids, int nbrMotors, int* models)
 {
     m_nbrMotors = nbrMotors;
@@ -46,6 +54,12 @@ void Hal::init(int* ids, int nbrMotors, int* models)
     m_models =  models;
 }
 
+
+/**
+ * @brief       Get the control table corresponding to the input motor model number
+ * @param[in]   modelNumber Query motor model number
+ * @return      Control table corresponding to the query motor
+ */
 ControlTable Hal::getControlTable(int modelNumber)
 {
     ControlTable motor;
@@ -63,7 +77,12 @@ ControlTable Hal::getControlTable(int modelNumber)
     return motor;
 }
 
-
+/**
+ * @brief       Get a specific control field corresponding to the input motor model number
+ * @param[in]   modelNumber Query motor model number
+ * @param[in]   item Query field in the control table (ex: GOAL_POSITION)
+ * @return      Control field corresponding to the query
+ */
 Field Hal::getControlFieldFromModel(int modelNumber, ControlTableItem::ControlTableItemIndex item)
 {
     ControlTable motor = getControlTable(modelNumber);
@@ -72,6 +91,11 @@ Field Hal::getControlFieldFromModel(int modelNumber, ControlTableItem::ControlTa
     return field;
 }
 
+/**
+ * @brief       Get the motor model number corresponding to the input motor ID
+ * @param[in]   id Query motor ID
+ * @return      Motor model number of the query motor
+ */
 int Hal::getModelNumberFromID(int id)
 {
     int i;
@@ -83,7 +107,12 @@ int Hal::getModelNumberFromID(int id)
     return m_models[i];
 }
 
-
+/**
+ * @brief       Extract a specific control field from the input control table
+ * @param[in]   motor Control table of the query motor, previously gotten with getControlTable()
+ * @param[in]   item Query field in the control table (ex: GOAL_POSITION)
+ * @return      Control field corresponding to the query
+ */
 Field Hal::getControlField(ControlTable motor, ControlTableItem::ControlTableItemIndex item)
 {
     Field field;
@@ -194,6 +223,11 @@ Field Hal::getControlField(ControlTable motor, ControlTableItem::ControlTableIte
     return field;
 }
 
+/**
+ * @brief       Get our custom position offset, so that the 0 angle is in the center
+ * @param[in]   modelNumber Query motor model number
+ * @return      Position offset [rad]
+ */
 float Hal::getPositionOffset(int modelNumber)
 {
     float offset = 0;
