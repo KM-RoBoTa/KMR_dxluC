@@ -31,6 +31,9 @@ public:
 private:
     InfoBulkReadInst_t m_readerInfo;
     int32_t* m_fbck_params;
+
+    void bulkRead(float* fbck);
+    void basicRead(float* fbck);
 };
 
 
