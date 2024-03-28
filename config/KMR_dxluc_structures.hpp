@@ -1,6 +1,9 @@
 #ifndef KMR_DLXUC_STRUCTURES_HPP
 #define KMR_DLXUC_STRUCTURES_HPP
 
+namespace KMR_dxluC
+{
+
 #define UNDEF -1
 
 struct Field {
@@ -198,5 +201,6 @@ struct ControlTable {
     }
 };
 
+}
 
 #endif

@@ -25,6 +25,9 @@
 #define DXL_LOBYTE(w)       ((uint8_t)(((uint64_t)(w)) & 0xff))
 #define DXL_HIBYTE(w)       ((uint8_t)((((uint64_t)(w)) >> 8) & 0xff))
 
+namespace KMR_dxluC
+{
+
 /**
  * @class   Class used for writing to a control field
  */
@@ -67,5 +70,6 @@ private:
 
 };
 
+}
 
 #endif

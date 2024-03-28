@@ -21,6 +21,9 @@
 #include "../include/KMR_dxluc_writer.hpp"
 #include "../include/KMR_dxluc_reader.hpp"
 
+namespace KMR_dxluC
+{
+
 /**
  * @class   Class that defines a base robot, handling the communication with Dynamixel motors.
  *          It needs to be inherited by a custom Robot class
@@ -58,5 +61,5 @@ private:
 
 };
 
-
+}
 #endif

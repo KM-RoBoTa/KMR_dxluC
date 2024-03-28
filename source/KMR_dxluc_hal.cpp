@@ -16,6 +16,9 @@
 
 #include "../include/KMR_dxluc_hal.hpp"
 
+namespace KMR_dxluC
+{
+
 /**
  * @brief       Constructor for Hal
  * @param[in]   protocol_version Dynamixel protocol version (1 or 2) 
@@ -236,4 +239,6 @@ float Hal::getPositionOffset(int modelNumber)
         offset = POS_OFFSET_AX_12A;
             
     return offset;
+}
+
 }

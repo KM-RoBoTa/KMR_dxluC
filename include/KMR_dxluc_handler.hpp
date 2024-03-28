@@ -19,6 +19,9 @@
 #include "../config/KMR_dxluc_structures.hpp"
 #include "../include/KMR_dxluc_hal.hpp"
 
+namespace KMR_dxluC
+{
+
 /**
  * @class   Parent class, to be specialized as a Reader or Writer
  * @note	This class is not usable by itself, it is a non-specialized sketelon inherited
@@ -46,5 +49,6 @@ protected:
 
 };
 
+}
 
 #endif

@@ -13,6 +13,8 @@
 
 #include "../include/KMR_dxluc_handler.hpp"
 
+namespace KMR_dxluC
+{
 
 /**
  * @brief       Constructor for a Handler, parent class for the Writer and Reader classes
@@ -92,4 +94,6 @@ void Handler::checkMotorCompatibility()
 
     m_addr = ref_field.addr;
     m_length = ref_field.length;
+}
+
 }

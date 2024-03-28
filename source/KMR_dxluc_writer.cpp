@@ -13,6 +13,9 @@
 
 #include "../include/KMR_dxluc_writer.hpp"
 
+namespace KMR_dxluC
+{
+
 /**
  * @brief       Constructor for a Writer handler, used for writing data to motors
  * @param[in]   ids List of IDs of the motors handled by this specific handler
@@ -27,5 +30,5 @@ Writer::Writer(const int* ids, const int nbrMotors, ControlTableItem::ControlTab
 
 } 
 
-
+}
 

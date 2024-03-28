@@ -18,6 +18,9 @@
 #include <actuator.h>
 #include "../config/KMR_dxluc_control_tables.hpp"
 
+namespace KMR_dxluC
+{
+
 /**
  * @class    Hardware abstraction layer for Dynamixel motors
  * @note     The lowest-level element in the library. The Hal class serves primarily as
@@ -46,5 +49,6 @@ private:
 
 };
 
+}
 
 #endif

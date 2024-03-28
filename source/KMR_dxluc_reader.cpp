@@ -16,6 +16,9 @@
 
 #include "../include/KMR_dxluc_reader.hpp"
 
+namespace KMR_dxluC
+{
+
 /**
  * @brief       Constructor for a Reader handler, used for reading data from motors
  * @param[in]   ids List of IDs of the motors handled by this specific handler
@@ -137,4 +140,6 @@ void Reader::checkBulkReadAvailability()
             }
         }
     }
+}
+
 }

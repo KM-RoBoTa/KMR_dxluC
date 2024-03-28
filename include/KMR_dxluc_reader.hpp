@@ -19,6 +19,9 @@
 #include "KMR_dxluc_handler.hpp"
 #include "../include/KMR_dxluc_hal.hpp"
 
+namespace KMR_dxluC
+{
+
 /**
  * @class   Class used for reading a control field
  */
@@ -37,5 +40,6 @@ private:
     void checkBulkReadAvailability();
 };
 
+}
 
 #endif

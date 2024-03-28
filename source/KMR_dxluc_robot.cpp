@@ -50,7 +50,8 @@
     const int DXL_DIR_PIN = 2; // DYNAMIXEL Shield DIR PIN
 #endif
 
-
+namespace KMR_dxluC
+{
 
 /**
  * @brief       Constructor for BaseRobot
@@ -276,6 +277,8 @@ void BaseRobot::setOperatingModes(int* modes)
         m_dxl->setOperatingMode(m_ids[i], modes[i]);
 
     delay(30);
+}
+
 }
 
 
