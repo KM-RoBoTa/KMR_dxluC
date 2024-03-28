@@ -25,11 +25,13 @@ namespace KMR_dxluC
  */
 Hal::Hal(int protocol_version)
 {
+    //m_DEBUG_SERIAL = DEBUG_SERIAL;
+
     if (protocol_version == 1 || protocol_version == 2)
         m_protocol = protocol_version;
     else {
+        //m_DEBUG_SERIAL.println("Error! This protocol does not exist. Exiting...");
         exit(1);
-        // print error
     }
 
     // Create control tables 
@@ -71,7 +73,7 @@ ControlTable Hal::getControlTable(int modelNumber)
     case MODEL_NBR_MX_64AR: 
         motor = *MX_64; break;
     default:
-        //DEBUG_SERIAL.println("Error: this model is unknown");
+        //m_DEBUG_SERIAL.println("Error: this model is unknown");
         exit(1);
     }
 
@@ -212,12 +214,12 @@ Field Hal::getControlField(ControlTable motor, ControlTableItem::ControlTableIte
     case ControlTableItem::EXTERNAL_PORT_DATA_4:    field = motor.externalPortData4;        break;
 
     default:
-        //DEBUG_SERIAL.println("Error: this field is unknown");
+        //m_DEBUG_SERIAL.println("Error: this field is unknown");
         exit(1);
     }    
 
     if (field.length == UNDEF) {
-        //DEBUG_SERIAL.println("Error: this field does not exist for this motor or protocol!");
+        //m_DEBUG_SERIAL.println("Error: this field does not exist for this motor or protocol!");
         exit(1);
     }
 

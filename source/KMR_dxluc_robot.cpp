@@ -74,10 +74,6 @@ BaseRobot::BaseRobot(const int* ids, const int nbrMotors, const int baudrate, co
 
     initMotors(baudrate, protocol_version);
 
-    // Use UART port of DYNAMIXEL Shield to debug.
-    DEBUG_SERIAL.begin(115200);
-    while(!DEBUG_SERIAL);
-
     m_hal->init(m_ids, m_nbrMotors, m_modelNumbers);
 }
 
@@ -260,9 +256,10 @@ void BaseRobot::setMaxTorques(float* maxTorques)
         EEPROM_writer->write(maxTorques);
         delay(30);
     }
-    else
+    else {
+        DEBUG_SERIAL.print("Error! Max torque setting is not supported in protocol 2. Exiting....");
         exit(1);
-        // DEBUG PRINT
+    }
 }
 
 /** 
@@ -281,7 +278,6 @@ void BaseRobot::setOperatingModes(int* modes)
     }
     else {
         // error message
-        exit(1);
     }
 }
 

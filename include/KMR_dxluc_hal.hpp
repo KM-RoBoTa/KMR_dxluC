@@ -33,6 +33,7 @@ public:
     Hal(int protocol_version);
     void init(int* ids, int nbrMotors, int* models);
     int m_protocol;
+    //USBSerial m_DEBUG_SERIAL;
 
     ControlTable getControlTable(int modelNumber);
     Field getControlField(ControlTable motor, ControlTableItem::ControlTableItemIndex item);
