@@ -44,6 +44,7 @@ public:
     void setMaxVoltages(float* maxVoltages);
     void setMaxTorques(float* maxTorques);
     void setOperatingModes(int* modes);
+    void setReturnTime(float* returnTimes);
 
 protected:
     Dynamixel2Arduino* m_dxl;

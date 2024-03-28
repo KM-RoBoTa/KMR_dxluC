@@ -268,15 +268,33 @@ void BaseRobot::setMaxTorques(float* maxTorques)
 /** 
  * @brief       Set the operating modes of all motors
  * @param[in]   modes Control modes for each motor
- * @note        Mode = 
- * @todo finish modes
+ * @note        Modes: current = 0; velocity = 1; position = 3; extended position = 4;
+ *              current-based position = 5; PWM = 16 
  */
 void BaseRobot::setOperatingModes(int* modes)
 {
-    for (int i=0; i<m_nbrMotors; i++)
-        m_dxl->setOperatingMode(m_ids[i], modes[i]);
+    if (m_protocolVersion == 2) {
+        for (int i=0; i<m_nbrMotors; i++) {
+            m_dxl->setOperatingMode(m_ids[i], modes[i]);
+            delay(30);
+        }
+    }
+    else {
+        // error message
+        exit(1);
+    }
+}
 
-    delay(30);
+/**
+ * @brief       Set the return times to all motors
+ * @param[in]   returnTimes Return times of the motors [s]
+ */
+void BaseRobot::setReturnTime(float* returnTimes)
+{
+    EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::RETURN_DELAY_TIME, m_hal, m_dxl);
+
+    EEPROM_writer->write(returnTimes);
+    delay(30);    
 }
 
 }
