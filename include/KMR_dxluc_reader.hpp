@@ -1,14 +1,13 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_robot.hpp
- * @brief           Header for the KMR_dxl_robot.cpp file.
+ * @file            KMR_dxl_reader.hpp
+ * @brief           Header for the KMR_dxl_reader.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
  * This code is under MIT licence: https://opensource.org/licenses/MIT
- * @authors  Laura.Paez@KM-RoBota.com, 08/2023
- * @authors  Kamilo.Melo@KM-RoBota.com, 08/2023
- * @authors katarina.lichardova@km-robota.com, 08/2023
+ * @authors kamilo.melo@km-robota.com, 03/2024
+ * @authors katarina.lichardova@km-robota.com, 03/2024
  ******************************************************************************
  */
 
@@ -21,7 +20,7 @@
 #include "../include/KMR_dxluc_hal.hpp"
 
 /**
- * @brief   Class that defines a base robot, handling the communication with Dynamixel motors.
+ * @brief   Class used for reading a control field
  */
 class Reader : public Handler{
 public:
@@ -31,9 +30,11 @@ public:
 private:
     InfoBulkReadInst_t m_readerInfo;
     int32_t* m_fbck_params;
+    bool m_canUseBulkRead = 1;
 
     void bulkRead(float* fbck);
     void basicRead(float* fbck);
+    void checkBulkReadAvailability();
 };
 
 

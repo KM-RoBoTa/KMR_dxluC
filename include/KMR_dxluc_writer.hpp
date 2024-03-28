@@ -1,14 +1,13 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_robot.hpp
- * @brief           Header for the KMR_dxl_robot.cpp file.
+ * @file            KMR_dxl_writer.hpp
+ * @brief           Header for the KMR_dxl_writer.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
  * This code is under MIT licence: https://opensource.org/licenses/MIT
- * @authors  Laura.Paez@KM-RoBota.com, 08/2023
- * @authors  Kamilo.Melo@KM-RoBota.com, 08/2023
- * @authors katarina.lichardova@km-robota.com, 08/2023
+ * @authors kamilo.melo@km-robota.com, 03/2024
+ * @authors katarina.lichardova@km-robota.com, 03/2024
  ******************************************************************************
  */
 
@@ -27,13 +26,16 @@
 #define DXL_HIBYTE(w)       ((uint8_t)((((uint64_t)(w)) >> 8) & 0xff))
 
 /**
- * @brief   Class that defines a base robot, handling the communication with Dynamixel motors.
- *          It can be used as is, or inherited by a custom class
+ * @brief   Class used for writing to a control field
  */
 class Writer : public Handler{
 public:
     Writer(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
 
+    /**
+     * @brief       Write the input data to all the motors' control field handled by this Writer
+     * @param[in]   data Array of values to be sent to motors, in SI units
+     */
     template <typename T>
     void write(T* data)
     {
@@ -58,7 +60,6 @@ public:
 
         // Send the prepared data
         m_dxl->syncWrite(syncWriteParams);
-
     }
 
 

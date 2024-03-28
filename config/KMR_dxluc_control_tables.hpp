@@ -3,6 +3,10 @@
 
 #include "KMR_dxluc_structures.hpp"
 
+#define MODEL_NBR_AX_12A    12
+#define MODEL_NBR_MX_64     310
+#define MODEL_NBR_MX_64AR   311
+
 struct MX_64_P1 : ControlTable {
     MX_64_P1 ()
     {
