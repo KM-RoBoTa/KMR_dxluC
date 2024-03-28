@@ -20,11 +20,11 @@
 #include "../include/KMR_dxluc_hal.hpp"
 
 /**
- * @brief   Class used for reading a control field
+ * @class   Class used for reading a control field
  */
 class Reader : public Handler{
 public:
-    Reader(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
+    Reader(const int* ids, const int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
     void read(float* fbck);
 
 private:

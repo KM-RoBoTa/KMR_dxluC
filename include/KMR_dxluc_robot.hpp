@@ -22,7 +22,7 @@
 #include "../include/KMR_dxluc_reader.hpp"
 
 /**
- * @brief   Class that defines a base robot, handling the communication with Dynamixel motors.
+ * @class   Class that defines a base robot, handling the communication with Dynamixel motors.
  *          It needs to be inherited by a custom Robot class
  */
 class BaseRobot {

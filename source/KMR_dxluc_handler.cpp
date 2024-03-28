@@ -22,7 +22,7 @@
  * @param[in]   hal Pointer to the previously created Hal object
  * @param[in]   dxl Pointer to the previously created Dynamixel2Arduino object
  */
-Handler::Handler(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl)
+Handler::Handler(const int* ids, const int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl)
 {
     m_nbrMotors = nbrMotors;
     m_item = item;

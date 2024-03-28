@@ -20,7 +20,7 @@
 #include "../include/KMR_dxluc_hal.hpp"
 
 /**
- * @brief   Parent class, to be specialized as a Reader or Writer
+ * @class   Parent class, to be specialized as a Reader or Writer
  * @note	This class is not usable by itself, it is a non-specialized sketelon inherited
  * 			by the child classes Reader and Writer. \n
  * 			It contains functionalities to check the viability of sync readers/writers 
@@ -28,7 +28,7 @@
  */
 class Handler {
 public:
-    Handler(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
+    Handler(const int* ids, const int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
 
 protected:
     int* m_ids;

@@ -19,7 +19,7 @@
 #include "../config/KMR_dxluc_control_tables.hpp"
 
 /**
- * @brief    Hardware abstraction layer for Dynamixel motors
+ * @class    Hardware abstraction layer for Dynamixel motors
  * @note     The lowest-level element in the library. The Hal class serves primarily as
  *           an abstraction layer, providing high-level functions to get the Dynamixel control
  *           table fields (addresses, byte sizes and units).

@@ -24,7 +24,7 @@
  * @param[in]   hal Pointer to the previously created Hal object
  * @param[in]   dxl Pointer to the previously created Dynamixel2Arduino object
  */
-Reader::Reader(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl)
+Reader::Reader(const int* ids, const int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl)
 : Handler(ids, nbrMotors, item, hal, dxl)
 {
     checkBulkReadAvailability();

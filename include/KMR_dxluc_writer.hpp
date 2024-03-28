@@ -26,15 +26,15 @@
 #define DXL_HIBYTE(w)       ((uint8_t)((((uint64_t)(w)) >> 8) & 0xff))
 
 /**
- * @brief   Class used for writing to a control field
+ * @class   Class used for writing to a control field
  */
 class Writer : public Handler{
 public:
-    Writer(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
+    Writer(const int* ids, const int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
 
     /**
      * @brief       Write the input data to all the motors' control field handled by this Writer
-     * @param[in]   data Array of values to be sent to motors, in SI units
+     * @tparam      data Array of values to be sent to motors, in SI units
      */
     template <typename T>
     void write(T* data)

@@ -21,7 +21,7 @@
  * @param[in]   hal Pointer to the previously created Hal object
  * @param[in]   dxl Pointer to the previously created Dynamixel2Arduino object
  */
-Writer::Writer(int* ids, int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl)
+Writer::Writer(const int* ids, const int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl)
 : Handler(ids, nbrMotors, item, hal, dxl)
 {
 
