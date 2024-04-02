@@ -1,1 +1,9 @@
-# KMR_dxluC
+# KMR_dxluc
+
+Library for an easy use of Dynamixel motors with the OpenCM9.04 board. 
+It completes and expands the Dynamixel2Arduino library, implementing syncWrite and bulkRead for faster communication with the motors.
+The hardware abstraction allows an easy use of this library.
+
+It works with both protocols 1 and 2.
+
+The documentation explaining how to use the library can be found [here](docs/markdown_sources/mainpage.md).
