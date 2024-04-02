@@ -1,3 +1,17 @@
+/**
+ ******************************************************************************
+ * @file            KMR_dxluc_structures.hpp
+ * @brief           Header file containing useful structures definitions
+ ******************************************************************************
+ * @copyright
+ * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
+ * This code is under MIT licence: https://opensource.org/licenses/MIT
+ * @authors katarina.lichardova@km-robota.com, 03/2024
+ * @authors kamilo.melo@km-robota.com, 03/2024
+ ******************************************************************************
+ */
+
+
 #ifndef KMR_DLXUC_STRUCTURES_HPP
 #define KMR_DLXUC_STRUCTURES_HPP
 

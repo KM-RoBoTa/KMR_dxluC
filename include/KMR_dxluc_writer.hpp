@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
- * @file            KMR_dxl_writer.hpp
- * @brief           Header for the KMR_dxl_writer.cpp file.
+ * @file            KMR_dxluc_writer.hpp
+ * @brief           Header for the KMR_dxluc_writer.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
  * This code is under MIT licence: https://opensource.org/licenses/MIT
- * @authors kamilo.melo@km-robota.com, 03/2024
  * @authors katarina.lichardova@km-robota.com, 03/2024
+ * @authors kamilo.melo@km-robota.com, 03/2024
  ******************************************************************************
  */
 
