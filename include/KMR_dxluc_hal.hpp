@@ -43,7 +43,8 @@ public:
 
 private:
     ControlTable* MX_64;
-
+    ControlTable* MX_106;
+    
     int* m_ids;
     int m_nbrMotors;
     int* m_models;

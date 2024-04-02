@@ -37,9 +37,11 @@ Hal::Hal(int protocol_version)
     // Create control tables 
     if (protocol_version == 1) {
         MX_64 = new MX_64_P1();
+        MX_106 = new MX_106_P1();
     }
     else {
         MX_64 = new MX_64_P2();
+        MX_106 = new MX_106_P2();
     }
 }
 
@@ -68,10 +70,14 @@ ControlTable Hal::getControlTable(int modelNumber)
     ControlTable motor;
 
     switch (modelNumber) {
-    case MODEL_NBR_MX_64:
+    case MODEL_NBR_MX_64_1:
         motor = *MX_64; break;
-    case MODEL_NBR_MX_64AR: 
+    case MODEL_NBR_MX_64_2: 
         motor = *MX_64; break;
+    case MODEL_NBR_MX_106_1:
+        motor = *MX_106; break;
+    case MODEL_NBR_MX_106_2:
+        motor = *MX_106; break;
     default:
         //m_DEBUG_SERIAL.println("Error: this model is unknown");
         exit(1);
