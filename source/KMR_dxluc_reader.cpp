@@ -74,16 +74,16 @@ Reader::Reader(const int* ids, const int nbrMotors, ControlTableItem::ControlTab
         m_fbck_params = new int32_t[nbrMotors]();
 
         m_readerInfo.is_info_changed = true;
-        m_readerInfo.xel_count = nbrMotors;
+        m_readerInfo.xel_count = (uint8_t) nbrMotors;
         m_readerInfo.packet.p_buf = new uint8_t[BUFFER_SIZE]();
         m_readerInfo.packet.buf_capacity = BUFFER_SIZE;
         m_readerInfo.packet.is_completed = false;
         m_readerInfo.p_xels = new XELInfoBulkRead_t[nbrMotors]();
 
         for (int i=0; i<nbrMotors; i++) {
-            m_readerInfo.p_xels[i].addr = m_addr;
-            m_readerInfo.p_xels[i].addr_length = m_length;
-            m_readerInfo.p_xels[i].id = m_ids[i];
+            m_readerInfo.p_xels[i].addr = (uint16_t) m_addr;
+            m_readerInfo.p_xels[i].addr_length = (uint16_t) m_length;
+            m_readerInfo.p_xels[i].id = (uint8_t) m_ids[i];
             m_readerInfo.p_xels[i].p_recv_buf = (uint8_t*)&m_fbck_params[i];
         }
     }
@@ -92,14 +92,19 @@ Reader::Reader(const int* ids, const int nbrMotors, ControlTableItem::ControlTab
 /**
  * @brief       Read the control field of all the motors handled by this Reader
  * @param[out]  fbck Array for storing the read values, expressed in SI units
+ * @retval      0 if reading successful, -1 if error
  * @note        Regardless of the control field type, the output will always be floats
  */
-void Reader::read(float* fbck)
+int Reader::read(float* fbck)
 {
+    m_readError = 0;
+
     if (m_canUseBulkRead)
         bulkRead(fbck);
     else    
         basicRead(fbck);
+
+    return m_readError;
 }
 
 /**
@@ -122,10 +127,9 @@ void Reader::bulkRead(float* fbck)
         }
     }
     else {
+        m_readError = -1;
         DEBUG_SERIAL.println("Error reading feedback"); 
         DEBUG_SERIAL.println(m_dxl->getLastLibErrCode());
-        //for (int i=0; i<m_nbrMotors; i++)
-        //    fbck[i] = 9999;
     }
 }
 
@@ -151,7 +155,8 @@ void Reader::basicRead(float* fbck)
             parameter = (int32_t)data;
         }
         else {
-            DEBUG_SERIAL.print("Error reading motor "); DEBUG_SERIAL.println(i); 
+            m_readError = -1;
+            DEBUG_SERIAL.print("Error reading motor "); DEBUG_SERIAL.println(m_ids[i]); 
         }
 
         // Convert the read parameter into SI units
@@ -164,28 +169,15 @@ void Reader::basicRead(float* fbck)
  */
 void Reader::checkBulkReadAvailability()
 {
-    // bulkRead cannot be used in protocol 1 if single motor
+    // bulkRead cannot be used in protocol 1 if single motor (theoretically)
     // https://emanual.robotis.com/docs/en/dxl/protocol1/
+    // In practice, bulkRead did not work with protocol 1 at all, perhaps the old deprecated
+    // version is needed, but it is not implemented
 
-    if (m_hal->m_protocol == 1 && m_nbrMotors == 1)
+    if (m_hal->m_protocol == 1)
         m_canUseBulkRead = 0;
-    else { 
-        for (int i=0; i<m_nbrMotors; i++) {
-            if (m_models[i] == MODEL_NBR_AX_12A) {  // AX-12A cannot use bulkRead
-                m_canUseBulkRead = 0;
-                break;
-            }
-        }
-    }
-
-    // HARDOCDE DEBUG
-    m_canUseBulkRead = 0;
-
-    if (m_canUseBulkRead == 1)
-        DEBUG_SERIAL.println("This reader can use bulk read");
     else
-        DEBUG_SERIAL.println("This reader cannot use bulk read"); 
-
+        m_canUseBulkRead = 1;
 }
 
 }

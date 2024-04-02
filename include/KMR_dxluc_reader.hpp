@@ -28,12 +28,13 @@ namespace KMR_dxluC
 class Reader : public Handler{
 public:
     Reader(const int* ids, const int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
-    void read(float* fbck);
+    int read(float* fbck);
 
 private:
     InfoBulkReadInst_t m_readerInfo;
     int32_t* m_fbck_params;
     bool m_canUseBulkRead = 1;
+    int m_readError = 0;
 
     void bulkRead(float* fbck);
     void basicRead(float* fbck);
