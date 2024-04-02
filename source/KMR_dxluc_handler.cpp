@@ -69,10 +69,10 @@ Handler::Handler(const int* ids, const int nbrMotors, ControlTableItem::ControlT
     m_hal = hal;
     m_dxl = dxl;
 
-    m_ids = new int(m_nbrMotors); 
-    m_models = new int(m_nbrMotors);
-    m_units = new float(m_nbrMotors);
-    m_offsets = new float (m_nbrMotors);
+    m_ids = new int[m_nbrMotors]; 
+    m_models = new int[m_nbrMotors];
+    m_units = new float[m_nbrMotors];
+    m_offsets = new float [m_nbrMotors];
 
     // Get the motor model numbers
     for (int i=0; i<m_nbrMotors; i++) {

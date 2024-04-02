@@ -10,6 +10,43 @@
  * @authors katarina.lichardova@km-robota.com, 03/2024
  ******************************************************************************
  */
+
+// Please modify it to suit your hardware.
+#if defined(ARDUINO_AVR_UNO) || defined(ARDUINO_AVR_MEGA2560) // When using DynamixelShield
+    #include <SoftwareSerial.h>
+    SoftwareSerial soft_serial(7, 8); // DYNAMIXELShield UART RX/TX
+    #define DXL_SERIAL   Serial
+    #define DEBUG_SERIAL soft_serial
+    const int DXL_DIR_PIN = 2; // DYNAMIXEL Shield DIR PIN
+#elif defined(ARDUINO_SAM_DUE) // When using DynamixelShield
+    #define DXL_SERIAL   Serial
+    #define DEBUG_SERIAL SerialUSB
+    const int DXL_DIR_PIN = 2; // DYNAMIXEL Shield DIR PIN
+#elif defined(ARDUINO_SAM_ZERO) // When using DynamixelShield
+    #define DXL_SERIAL   Serial1
+    #define DEBUG_SERIAL SerialUSB
+    const int DXL_DIR_PIN = 2; // DYNAMIXEL Shield DIR PIN
+#elif defined(ARDUINO_OpenCM904) // When using official ROBOTIS board with DXL circuit.
+    #define DXL_SERIAL   Serial3 //OpenCM9.04 EXP Board's DXL port Serial. (Serial1 for the DXL port on the OpenCM 9.04 board)
+    #define DEBUG_SERIAL Serial
+    const int DXL_DIR_PIN = 22; //OpenCM9.04 EXP Board's DIR PIN. (28 for the DXL port on the OpenCM 9.04 board)
+    #define DEFAULT_BAUDRATE 57600
+#elif defined(ARDUINO_OpenCR) // When using official ROBOTIS board with DXL circuit.
+    // For OpenCR, there is a DXL Power Enable pin, so you must initialize and control it.
+    // Reference link : https://github.com/ROBOTIS-GIT/OpenCR/blob/master/arduino/opencr_arduino/opencr/libraries/DynamixelSDK/src/dynamixel_sdk/port_handler_arduino.cpp#L78
+    #define DXL_SERIAL   Serial3
+    #define DEBUG_SERIAL Serial
+    const int DXL_DIR_PIN = 84; // OpenCR Board's DIR PIN.
+#elif defined(ARDUINO_OpenRB)  // When using OpenRB-150
+    //OpenRB does not require the DIR control pin.
+    #define DXL_SERIAL Serial1
+    #define DEBUG_SERIAL Serial
+    const int DXL_DIR_PIN = -1;
+#else // Other boards when using DynamixelShield
+    #define DXL_SERIAL   Serial1
+    #define DEBUG_SERIAL Serial
+    const int DXL_DIR_PIN = 2; // DYNAMIXEL Shield DIR PIN
+#endif
  
 #define BUFFER_SIZE 128
 #define TIMEOUT 100
@@ -75,7 +112,7 @@ void Reader::bulkRead(float* fbck)
     int32_t parameter;
     uint8_t recv_count;
 
-    recv_count = m_dxl->bulkRead(&m_readerInfo);
+    recv_count = m_dxl->bulkRead(&m_readerInfo, TIMEOUT);
 
     // Get the feedback values and convert them to SI units
     if (recv_count > 0) {
@@ -85,9 +122,10 @@ void Reader::bulkRead(float* fbck)
         }
     }
     else {
-        for (int i=0; i<m_nbrMotors; i++)
-            fbck[i] = 9999;
-        // error print
+        DEBUG_SERIAL.println("Error reading feedback"); 
+        DEBUG_SERIAL.println(m_dxl->getLastLibErrCode());
+        //for (int i=0; i<m_nbrMotors; i++)
+        //    fbck[i] = 9999;
     }
 }
 
@@ -112,10 +150,9 @@ void Reader::basicRead(float* fbck)
             int16_t data = (int16_t) parameter;
             parameter = (int32_t)data;
         }
-        //else {
-        //    // print error message
-        //    
-        //}
+        else {
+            DEBUG_SERIAL.print("Error reading motor "); DEBUG_SERIAL.println(i); 
+        }
 
         // Convert the read parameter into SI units
         fbck[i] = (float)parameter * m_units[i]  - m_offsets[i];
@@ -140,6 +177,15 @@ void Reader::checkBulkReadAvailability()
             }
         }
     }
+
+    // HARDOCDE DEBUG
+    m_canUseBulkRead = 0;
+
+    if (m_canUseBulkRead == 1)
+        DEBUG_SERIAL.println("This reader can use bulk read");
+    else
+        DEBUG_SERIAL.println("This reader cannot use bulk read"); 
+
 }
 
 }
