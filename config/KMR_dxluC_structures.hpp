@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_structures.hpp
+ * @file            KMR_dxluC_structures.hpp
  * @brief           Header file containing useful structures definitions
  ******************************************************************************
  * @copyright

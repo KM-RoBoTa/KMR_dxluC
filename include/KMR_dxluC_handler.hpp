@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_handler.hpp
- * @brief           Header for the KMR_dxluc_handler.cpp file.
+ * @file            KMR_dxluC_handler.hpp
+ * @brief           Header for the KMR_dxluC_handler.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
@@ -16,8 +16,8 @@
 
 #include <Dynamixel2Arduino.h>
 #include <actuator.h>
-#include "../config/KMR_dxluc_structures.hpp"
-#include "../include/KMR_dxluc_hal.hpp"
+#include "../config/KMR_dxluC_structures.hpp"
+#include "../include/KMR_dxluC_hal.hpp"
 
 namespace KMR_dxluC
 {

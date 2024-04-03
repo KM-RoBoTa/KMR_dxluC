@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_handler.cpp
+ * @file            KMR_dxluC_handler.cpp
  * @brief           Defines the Handler class
  ******************************************************************************
  * @copyright
@@ -48,7 +48,7 @@
     const int DXL_DIR_PIN = 2; // DYNAMIXEL Shield DIR PIN
 #endif
 
-#include "../include/KMR_dxluc_handler.hpp"
+#include "../include/KMR_dxluC_handler.hpp"
 
 namespace KMR_dxluC
 {

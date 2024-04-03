@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_reader.hpp
+ * @file            KMR_dxluC_reader.hpp
  * @brief           Defines the Reader class
  ******************************************************************************
  * @copyright
@@ -51,7 +51,7 @@
 #define BUFFER_SIZE 128
 #define TIMEOUT 100
 
-#include "../include/KMR_dxluc_reader.hpp"
+#include "../include/KMR_dxluC_reader.hpp"
 
 namespace KMR_dxluC
 {

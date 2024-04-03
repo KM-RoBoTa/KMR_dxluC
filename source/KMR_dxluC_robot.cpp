@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_robot.cpp
+ * @file            KMR_dxluC_robot.cpp
  * @brief           Defines the BaseRobot class
  ******************************************************************************
  * @copyright
@@ -11,7 +11,7 @@
  ******************************************************************************
  */
 
-#include "../include/KMR_dxluc_robot.hpp"
+#include "../include/KMR_dxluC_robot.hpp"
 
 // Please modify it to suit your hardware.
 #if defined(ARDUINO_AVR_UNO) || defined(ARDUINO_AVR_MEGA2560) // When using DynamixelShield

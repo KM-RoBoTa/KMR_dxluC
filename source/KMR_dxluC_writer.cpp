@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_writer.hpp
+ * @file            KMR_dxluC_writer.hpp
  * @brief           Defines the Writer class
  ******************************************************************************
  * @copyright
@@ -11,7 +11,7 @@
  ******************************************************************************
  */
 
-#include "../include/KMR_dxluc_writer.hpp"
+#include "../include/KMR_dxluC_writer.hpp"
 
 namespace KMR_dxluC
 {

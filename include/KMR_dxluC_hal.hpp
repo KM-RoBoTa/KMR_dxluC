@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_hal.hpp
- * @brief           Header for the KMR_dxluc_hal.cpp file.
+ * @file            KMR_dxluC_hal.hpp
+ * @brief           Header for the KMR_dxluC_hal.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
@@ -16,7 +16,7 @@
 
 #include <Dynamixel2Arduino.h>
 #include <actuator.h>
-#include "../config/KMR_dxluc_control_tables.hpp"
+#include "../config/KMR_dxluC_control_tables.hpp"
 
 namespace KMR_dxluC
 {

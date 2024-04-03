@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_writer.hpp
- * @brief           Header for the KMR_dxluc_writer.cpp file.
+ * @file            KMR_dxluC_writer.hpp
+ * @brief           Header for the KMR_dxluC_writer.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
@@ -16,9 +16,9 @@
 
 #include <Dynamixel2Arduino.h>
 #include <actuator.h>
-#include "KMR_dxluc_handler.hpp"
-#include "../config/KMR_dxluc_structures.hpp"
-#include "../include/KMR_dxluc_hal.hpp"
+#include "KMR_dxluC_handler.hpp"
+#include "../config/KMR_dxluC_structures.hpp"
+#include "../include/KMR_dxluC_hal.hpp"
 
 #define DXL_LOWORD(l)       ((uint16_t)(((uint64_t)(l)) & 0xffff))
 #define DXL_HIWORD(l)       ((uint16_t)((((uint64_t)(l)) >> 16) & 0xffff))

@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_hal.hpp
- * @brief           Header for the KMR_dxluc_hal.cpp file.
+ * @file            KMR_dxluC_hal.hpp
+ * @brief           Header for the KMR_dxluC_hal.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
@@ -14,7 +14,7 @@
 #define POS_OFFSET_DEFAULT 3.14159265358979323846264338327950288 // M_PI
 #define POS_OFFSET_AX_12A 2.61799387799 // 130 degrees in radians 
 
-#include "../include/KMR_dxluc_hal.hpp"
+#include "../include/KMR_dxluC_hal.hpp"
 
 namespace KMR_dxluC
 {

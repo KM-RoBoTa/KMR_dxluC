@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_control_tables.hpp
+ * @file            KMR_dxluC_control_tables.hpp
  * @brief           Header file containing control tables of different motors
  ******************************************************************************
  * @copyright
@@ -14,7 +14,7 @@
 #ifndef KMR_DLXUC_CONTROL_TABLES_HPP
 #define KMR_DLXUC_CONTROL_TABLES_HPP
 
-#include "KMR_dxluc_structures.hpp"
+#include "KMR_dxluC_structures.hpp"
 
 namespace KMR_dxluC
 {

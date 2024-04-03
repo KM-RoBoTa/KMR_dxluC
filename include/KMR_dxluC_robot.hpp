@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @file            KMR_dxluc_robot.hpp
- * @brief           Header for the KMR_dxluc_robot.cpp file.
+ * @file            KMR_dxluC_robot.hpp
+ * @brief           Header for the KMR_dxluC_robot.cpp file.
  ******************************************************************************
  * @copyright
  * Copyright 2021-2023 Laura Paez Coy and Kamilo Melo                    \n
@@ -16,10 +16,10 @@
 
 #include <Dynamixel2Arduino.h>
 #include <actuator.h>
-#include "../config/KMR_dxluc_structures.hpp"
-#include "../include/KMR_dxluc_hal.hpp"
-#include "../include/KMR_dxluc_writer.hpp"
-#include "../include/KMR_dxluc_reader.hpp"
+#include "../config/KMR_dxluC_structures.hpp"
+#include "../include/KMR_dxluC_hal.hpp"
+#include "../include/KMR_dxluC_writer.hpp"
+#include "../include/KMR_dxluC_reader.hpp"
 
 namespace KMR_dxluC
 {
