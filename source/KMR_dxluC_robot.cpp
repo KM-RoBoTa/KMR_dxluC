@@ -100,12 +100,12 @@ void BaseRobot::initMotors(const int baudrate, const int protocol_version)
  */
 void BaseRobot::pingMotors()
 {
+    bool retval;
+    
     for (int i=0; i<m_nbrMotors; i++) {
-        DEBUG_SERIAL.print("Gonna ping motor: "); DEBUG_SERIAL.println(m_ids[i]);
-        bool retval = m_dxl->ping(m_ids[i]);
+        retval = m_dxl->ping(m_ids[i]);
 
         if(retval == true) {
-            //DEBUG_SERIAL.print("true ping of motor: "); DEBUG_SERIAL.println(m_ids[i]);
             m_modelNumbers[i] = m_dxl->getModelNumber(m_ids[i]);
             DEBUG_SERIAL.print("Ping succeeded for id ");
             DEBUG_SERIAL.print(m_ids[i]);
@@ -116,7 +116,7 @@ void BaseRobot::pingMotors()
             DEBUG_SERIAL.print("Error! Motor ");
             DEBUG_SERIAL.print(m_ids[i]);
             DEBUG_SERIAL.println(" not responding");
-            //exit(1);
+            exit(1);
         }
     }
 }

@@ -10,80 +10,144 @@ Dynamixel libraries define the motor angles as indicated in black in the followi
 
 ![File tree](../img/motor_new.png)
 
-with the angle position being in the interval \f$ ]0, 2\pi[ \f$ rad. <br /> 
-This library uses the redefined angles as indicated in blue, in the interval  \f$ ] - \pi, +\pi[ \f$ rad, with the 0 position being in the center of the motor.
+with the angle position being in the interval $ ]0, 2\pi[ $ rad. <br /> 
+This library uses the redefined angles as indicated in blue, in the interval  $ ] - \pi, +\pi[ $ rad, with the 0 position being in the center of the motor.
 
 
 # I. BaseRobot
 
+The constructor of ```BaseRobot``` takes the following arguments:
+```cpp
+/**
+ * @brief       Constructor for BaseRobot
+ * @param[in]   ids List of IDs of all the motors in the robot
+ * @param[in]   nbrMotors Number of motors in the robot
+ * @param[in]   baudrate Baudrate of the port handling communication with motors
+ * @param[in]   protocol_version Dynamixel protocol version (1 or 2)
+ */
+BaseRobot::BaseRobot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version)
+```
+which means any custom class inheriting ```BaseRobot``` needs to have those arguments as well. 
 
+On construction, it takes care of opening the communication port with the motors, and pings them all. If a motor fails to respond, the program is stopped.
 
-# II. Create your Robot class
+```BaseRobot``` also provides the most commonly used setup functions, such as: 
+- enabling and disabling motors with ```enableMotors``` and ```disableMotors```, as well as their id-specific versions
+- set minimal and maximal angle limits with ```setMinAngles``` and ```setMaxAngles```
+- set minimal and maximal voltage limits with ```setMinVoltages``` and ```setMaxVoltages```
+- set the maximum torque with ```setMaxTorques``` (available only in protocol 1)
+- set the return times of the motors with ```setReturnTime``` 
 
-## Step 3: Declare Robot
+Reminder: before writing in the EEPROM memory, the motors need to be disabled.
 
-The project's Robot class needs to inherit KMR::dxl::BaseRobot, which results in this class declaration: 
+- # II. Create a custom project-specific Robot class
+
+## Step 3: 
+
+The project's ```Robot``` class needs to inherit ```KMR_dxluC::BaseRobot```, which results in this class declaration: 
 
 ```cpp
 // robot.hpp
-class Robot : public KMR::dxl::BaseRobot {
-    ....
+
+class Robot : public KMR_dxluC::BaseRobot {
+public:
+    Robot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version);
+
+private:
+
 };
 ```
 and this constructor:
 
 ```cpp
 // robot.cpp
-Robot::Robot(vector<int> all_ids, const char *port_name, int baudrate, KMR::dxl::Hal hal)
-: KMR::dxl::BaseRobot(all_ids, port_name, baudrate, hal)
+
+Robot::Robot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version)
+: KMR_dxluC::BaseRobot(ids, nbrMotors, baudrate, protocol_version)
 {
-    ...
+
 }
 ```
-## Step 4: Writer handlers
 
-To create a handler that sends data to the motors (example: goal positions, LED control), a KMR::dxl::Writer object is used. \n
-It can be declared as a private member of Robot:
+Those arguments are the strict necessity in order to make the library work. Of course, more arguments to ```Robot```'s constructor can be added.
+
+## Writer handlers
+
+To create a handler that sends data to the motors (example: goal positions, LED control), you need to use a  ```KMR_dxluC::Writer``` object. 
+It can be declared as a private member of ```Robot``` (let's take the example of wanting to write goal positions):
 
 ```cpp
 // robot.hpp
-class Robot : public KMR::dxl::BaseRobot {
-    private:
-        KMR::dxl::Writer *m_writer;
+
+class Robot : public KMR_dxluC::BaseRobot {
+public:
+    Robot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version);
+
+private:
+    KMR_dxluC::Writer *positionWriter;
 };
 ```
 
-and initialized in Robot's constructor:
+and then initialized in Robot's constructor. A ```Writer``` constructor takes the following arguments:
 ```cpp
-m_writer = new KMR::dxl::Writer(writer_fields, ids, portHandler_, packetHandler_, m_hal, 0);
+/**
+ * @brief       Constructor for a Writer handler, used for writing data to motors
+ * @param[in]   ids List of IDs of the motors handled by this specific handler
+ * @param[in]   nbrMotors Number of motors handled by this handler 
+ * @param[in]   item Control field written to by this handler
+ * @param[in]   hal Pointer to the previously created Hal object
+ * @param[in]   dxl Pointer to the previously created Dynamixel2Arduino object
+ */
+Writer::Writer(const int* ids, const int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl)
 ```
-The "writer_fields" is the list of field(s) that will be handled by this specific Writer object. Since this library uses the protocol 2 of dynamixel's SDK, a single Writer can handle several control fields, resulting in an indirect address writing - but this is handled by the library automatically.
 
-The fields themselves are enumerated in KMR::dxl::Fields and correspond to control fields found in Dynamixels' control tables, as in https://emanual.robotis.com/docs/en/dxl/mx/mx-64-2/#control-table \n 
-For example, if we wish to have a Writer handler that sends goal positions and LED status commands to motors, the Writer definition becomes:
+The control item is the field to which the ```Writer``` object writes. Those fields are defined in the Dynamixel2Arduino library's ```actuactor.h``` header file. 
+For example, for position writing, the field is ```ControlTableItem::ControlTableItemIndex::GOAL_POSITION ```. Check the aforementioned header file or the Dynamixel SDK's documentation for the exhaustive list of fields.
 
-```cpp
-vector<KMR::dxl::Fields> writer_fields = {KMR::dxl::GOAL_POS, KMR::dxl::LED};
-m_writer = new KMR::dxl::Writer(writer_fields, ids, portHandler_, packetHandler_, m_hal, 0);
-```
+The constructor's arguments "hal" and "dxl" are *always* "m_hal" and "m_dxl", which are attributes of ```BaseRobot``` (there's no need to concern yourself with those more).
 
-Finally, the last element we need to use the Writer is the function that actually sends the data to motors. The creation of this function is very straightforward.
-
-The method KMR::dxl::Writer::addDataToWrite allows to save data that need to be sent to motors into the Writer's private attribute table. Then, once all the data is updated, it is sent with the method KMR::dxl::Writer::syncWrite. \n 
-Keeping the same Writer example, a public method can be defined inside Robot: 
+All of this results in the following initialization of a ```Writer``` object handling goal positions in ```Robot```'s constructor:
 
 ```cpp
 // robot.cpp
-void Robot::writeData(vector<float> angles, vector<int> LED_vals, vector<int> ids)
-{
-    m_writer->addDataToWrite(angles, KMR::dxl::GOAL_POS, ids);
-    m_writer->addDataToWrite(LED_vals, KMR::dxl::LED, ids);
 
-    m_writer->syncWrite(ids);
+Robot::Robot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version)
+: KMR_dxluC::BaseRobot(ids, nbrMotors, baudrate, protocol_version)
+{
+    positionWriter = new KMR_dxluC::Writer(ids, nbrMotors, ControlTableItem::ControlTableItemIndex::GOAL_POSITION, m_hal, m_dxl);
 }
 ```
 
-This public method Robot::writeData can be for example called from the main when new control values are received from the controller.
+Finally, the last element we need to use the ```Writer``` is the function that actually sends the data to motors. The creation of this function is very straightforward: a ```Writer``` object has the method ```write``` that takes care of taking the input values (expressed in SI units), transforming them and sending them to the motors. <br /> 
+You can create a public method in ```Robot``` that will take care of it:
+```cpp
+// robot.hpp
+
+class Robot : public KMR_dxluC::BaseRobot {
+public:
+    Robot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version);
+    void setPositions(float* positions);
+
+private:
+    KMR_dxluC::Writer *positionWriter;
+};
+```
+
+with the method itself being:
+```cpp
+// robot.cpp
+
+/**
+ * @brief       Send input positions to the motors
+ * @param[in]   positions Goal positions to be sent to motors [rad]
+ */
+void Robot::setPositions(float* positions)
+{
+    positionWriter->write(positions);
+}
+```
+
+As a summary, after creating those functions and objects, you only need to call ```Robot```'s method ```setPositions```, taking the array of goal positions expressed in radians as the input.
 
 ## Step 5: Reader handlers
 
