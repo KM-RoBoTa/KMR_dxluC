@@ -48,7 +48,7 @@ The rest of the files can be organized as wished.
 
 ### Includes
 
-In the source code, only one header needs to be included:
+In the source code, only one header needs to be included (highly recommended to be included by your custom class inheriting ```BaseRobot```):
 ```cpp
 #include "lib/KMR_dxluC/include/KMR_dxluC_robot.hpp"
 ```

@@ -1,54 +1,22 @@
-\page how-to-use How to use
+# How to use
 [TOC]
 
-The library lives in the KMR::dxl namespace. 
+As previously mentioned, the library lives in the ```KMR_dxluC``` namespace. 
 
-# I. Initializations
-## Step 1: Write a motor configuration file
+# Important: motor angle redefinition
 
-The first thing that needs to be done is to create a yaml configuration file of the motors used in the projet. \n
-Let's assume the robot has 4 motors with IDs {1, 2, 3, 4}, all of model MX_64R. Motors 1 and 3 are in multiturn mode, while the 2 others are not. \n
-The motor configuration file will look as follows:
+The angles of the motors have been redefined in this library so that they feel more natural.  <br /> 
+Dynamixel libraries define the motor angles as indicated in black in the following image:
 
-```yaml
-# motors_config.yaml
-nbr_motors: 4    
-motors: 
-  - ID: 1
-    model: MX_64R
-    multiturn: 1
-  - ID: 2
-    model: MX_64R
-    multiturn: 0
-  - ID: 3
-    model: MX_64R
-    multiturn: 1
-  - ID: 4
-    model: MX_64R
-    multiturn: 0
-```
+![File tree](../img/motor_new.png)
 
-The multiturn mode corresponds to the "extended position control" in dynamixel's SDK. It's a position control allowing 255 turns in each direction before the input value saturates. In order to avoid saturation and thus, to allow motors turning indefinitely, this library resets a motor after it does more than a full turn relative to its starting 0 position. \n
-After the reset, the motor thus detects its position as being between -180° and +180° again.  
+with the angle position being in the interval \f$ ]0, 2\pi[ \f$ rad. <br /> 
+This library uses the redefined angles as indicated in blue, in the interval  \f$ ] - \pi, +\pi[ \f$ rad, with the 0 position being in the center of the motor.
 
-In addition to setting the "multiturn" configuration in the yaml file correctly, the motors themselves must of course be configured for the correct operation mode.
 
-*Note*: the "multiturn" configuration must always be present in the yaml file, even if it's not used in any motor. Just set it to 0 for each motor.
+# I. BaseRobot
 
-## Step 2: Initialize hal
 
-The second step is to initialize a KMR::dxl::Hal object in the project's main file. \n
-This allows to make sure the motors configuration files are correct, as well as to create the hidden control tables used to abstract the hardware layer:
-
-```cpp
-// In main.cpp
-KMR::dxl::Hal hal;
-
-char path_to_motor_config[] = "../config/motors_config.yaml";
-char path_to_KMR_dxl[] = "../KMR_dxl";
-
-std::vector<int> all_ids = hal.init(path_to_motor_config, path_to_KMR_dxl);
-```
 
 # II. Create your Robot class
 
