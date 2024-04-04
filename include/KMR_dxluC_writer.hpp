@@ -18,7 +18,7 @@
 #include <actuator.h>
 #include "KMR_dxluC_handler.hpp"
 #include "../config/KMR_dxluC_structures.hpp"
-#include "../include/KMR_dxluC_hal.hpp"
+#include "KMR_dxluC_hal.hpp"
 
 #define DXL_LOWORD(l)       ((uint16_t)(((uint64_t)(l)) & 0xffff))
 #define DXL_HIWORD(l)       ((uint16_t)((((uint64_t)(l)) >> 16) & 0xffff))

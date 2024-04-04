@@ -17,9 +17,9 @@
 #include <Dynamixel2Arduino.h>
 #include <actuator.h>
 #include "../config/KMR_dxluC_structures.hpp"
-#include "../include/KMR_dxluC_hal.hpp"
-#include "../include/KMR_dxluC_writer.hpp"
-#include "../include/KMR_dxluC_reader.hpp"
+#include "KMR_dxluC_hal.hpp"
+#include "KMR_dxluC_writer.hpp"
+#include "KMR_dxluC_reader.hpp"
 
 namespace KMR_dxluC
 {

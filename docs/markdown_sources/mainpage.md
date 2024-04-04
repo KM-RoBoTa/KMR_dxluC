@@ -8,7 +8,7 @@ Its main strengths are the expansion of the Dynamixel2Arduino library from ROBOT
 The communication with the motors (reading/writing) is done through this library's ```Reader``` and ```Writer``` classes.
 
 The ```BaseRobot``` class provides a basis to be inherited by a custom, project-specific ```Robot``` class written by the user. ```BaseRobot``` provides general-use functions such as opening the communication port, pinging the motors, enabling/disabling motors and setting the angle limits of the motors. <br /> 
-The user needs to create custom ```Reader``` and ```Writer``` objects in their child ```Robot``` class, handling the fields they need (for example writing to goal position and reading the current position), as well as their corresponding reading/writing functions. Those functions are extremely straightforward to implement, see CODE. 
+The user needs to create custom ```Reader``` and ```Writer``` objects in their child ```Robot``` class, handling the fields they need (for example writing to goal position and reading the current position), as well as their corresponding reading/writing functions. Those functions are extremely straightforward to implement, and are explained further in this documentation.
 
 This library is written in C++, and lives inside the ```KMR_dxluC``` namespace. <br /> 
 It uses **SI units**, the only exception being temperature expressed in °C instead of Kelvins.

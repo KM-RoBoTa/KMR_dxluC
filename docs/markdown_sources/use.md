@@ -3,7 +3,7 @@
 
 As previously mentioned, the library lives in the ```KMR_dxluC``` namespace. 
 
-# Important: motor angle redefinition
+## Important: motor angle redefinition
 
 The angles of the motors have been redefined in this library so that they feel more natural.  <br /> 
 Dynamixel libraries define the motor angles as indicated in black in the following image:
@@ -11,12 +11,12 @@ Dynamixel libraries define the motor angles as indicated in black in the followi
 ![File tree](../img/motor_new.png)
 
 with the angle position being in the interval $]0, 2\pi[$ rad. <br /> 
-This library uses the redefined angles as indicated in blue, in the interval  $ ] - \pi, +\pi[ $ rad, with the 0 position being in the center of the motor.
+This library uses the redefined angles as indicated in blue, in the interval  $] - \pi, +\pi[$ rad, with the 0 position being in the center of the motor.
 
 
-# I. BaseRobot
+## BaseRobot
 
-The constructor of ```BaseRobot``` takes the following arguments:
+The constructor of the library's ```BaseRobot``` class takes the following arguments:
 ```cpp
 /**
  * @brief       Constructor for BaseRobot
@@ -38,11 +38,10 @@ On construction, it takes care of opening the communication port with the motors
 - set the maximum torque with ```setMaxTorques``` (available only in protocol 1)
 - set the return times of the motors with ```setReturnTime``` 
 
-Reminder: before writing in the EEPROM memory, the motors need to be disabled.
+> **Reminder** <br> 
+> Before writing in the EEPROM memory, the motors need to be disabled.
 
-- # II. Create a custom project-specific Robot class
-
-## Step 3: 
+## Create a custom project-specific Robot class
 
 The project's ```Robot``` class needs to inherit ```KMR_dxluC::BaseRobot```, which results in this class declaration: 
 
@@ -71,7 +70,7 @@ Robot::Robot(const int* ids, const int nbrMotors, const int baudrate, const int 
 
 Those arguments are the strict necessity in order to make the library work. Of course, more arguments to ```Robot```'s constructor can be added.
 
-## Writer handlers
+### Writer handlers
 
 To create a handler that sends data to the motors (example: goal positions, LED control), you need to use a  ```KMR_dxluC::Writer``` object. 
 It can be declared as a private member of ```Robot``` (let's take the example of wanting to write goal positions):
@@ -101,7 +100,7 @@ and then initialized in Robot's constructor. A ```Writer``` constructor takes th
 Writer::Writer(const int* ids, const int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl)
 ```
 
-The control item is the field to which the ```Writer``` object writes. Those fields are defined in the Dynamixel2Arduino library's ```actuactor.h``` header file. 
+The control item is the field to which the ```Writer``` object writes. Those fields are defined in the Dynamixel2Arduino library's ```actuator.h``` header file. 
 For example, for position writing, the field is ```ControlTableItem::GOAL_POSITION ```. Check the aforementioned header file or the Dynamixel SDK's documentation for the exhaustive list of fields.
 
 The constructor's arguments "hal" and "dxl" are *always* "m_hal" and "m_dxl", which are attributes of ```BaseRobot``` (there's no need to concern yourself with those more).
@@ -149,7 +148,10 @@ void Robot::setPositions(float* positions)
 
 As a summary, after creating those functions and objects, you only need to call ```Robot```'s method ```setPositions```, taking the array of goal positions expressed in radians as the input.
 
-## Step 5: Reader handlers
+> **Note** <br> 
+> ```Writer``` objects use Dynamixel's ```syncWrite``` function 
+
+### Reader handlers
 
 In order to fetch data from the motors' sensors (for example current position and temperature), a ```KMR_dxluC::Reader``` object is required. It works extremely similarly to its ```Writer``` counterpart.
 
@@ -187,3 +189,28 @@ void Robot::getPositions(float* positions)
     positionReader->read(positions);
 }
 ```
+
+> **Note** <br> 
+> ```Reader``` objects use Dynamixel's ```bulkWrite``` function when in protocol 2, and the normal ```write``` function in protocol 1. 
+> This results in reading being much faster in protocol 2. Nevertheless, it still remains very slow in any case.
+
+## Example code
+A full working example code can be found in the ```example``` folder.
+
+In that example, we have 2 motors, using protocol 2. <br /> 
+We want to constraint their allowed angle ranges between a minimum and maximum angle. <br /> 
+In the main loop, the motors' positions are going to constantly oscillate between that minimum and maximum value.<br /> 
+When the motors are going forward (positive rotation), we want their LED to be on.<br /> 
+We also want to read their current position at every step.
+
+This results in needing a total of 3 handlers:
+- a ```Writer``` that takes care of writing the goal positions
+- a ```Writer``` that takes care of writing the LED command
+- a ```Reader``` that takes care of reading the current position
+
+The minimum and maximum angle limits are sent as an additional argument in ```Robot'```s constructor, where we use the ```KMR_dlxUC::BaseRobot```'s predefined functions to set those limits.
+
+The complete code can be found in INSERT LINK TO EXAMPLE REPO.
+The example's files are organized as follows:
+
+![File tree](../img/example_tree.png)
