@@ -1,5 +1,4 @@
 # Introduction
-[TOC]
 
 This library provides an easy way to use Dynamixel motors in a project using the OpenCM9.04 board, in either Dynamixel protocol. <br /> 
 Its main strengths are the expansion of the Dynamixel2Arduino library from ROBOTIS, the implementation of syncWrite and bulkRead, as well as the abstraction of the hardware.

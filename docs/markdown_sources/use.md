@@ -1,5 +1,4 @@
 # How to use
-[TOC]
 
 As previously mentioned, the library lives in the ```KMR_dxluC``` namespace. 
 

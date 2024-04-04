@@ -1,5 +1,4 @@
 # How to setup
-[TOC]
 
 ## Installation
 Follow ROBOTIS's [installation guide](https://emanual.robotis.com/docs/en/software/arduino_ide/) for using the CM9.04 board in the Arduino IDE, using the Dynamixel2Arduino library.
@@ -12,7 +11,7 @@ Due to the file architecture enforced by Arduino, the file organization of your 
 
 The folder containing the project needs to be named exactly like the ```.ino``` file. <br /> 
 Any additional file to the ```.ino``` file needs to be inside a folder named exactly ```src```, situated in the same folder as the ```.ino```. <br /> 
-The rest of the files can be organized as wished.
+The files inside the ```src``` folder can be organized as wished.
 
 You have two possible ways to get the library, either by downloading a copy and simply pasting it somewhere inside the ```src``` folder, or by setting it as a git submodule.
 
