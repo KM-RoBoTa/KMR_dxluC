@@ -10,7 +10,7 @@ Dynamixel libraries define the motor angles as indicated in black in the followi
 
 ![File tree](../img/motor_new.png)
 
-with the angle position being in the interval $ ]0, 2\pi[ $ rad. <br /> 
+with the angle position being in the interval $]0, 2\pi[$ rad. <br /> 
 This library uses the redefined angles as indicated in blue, in the interval  $ ] - \pi, +\pi[ $ rad, with the 0 position being in the center of the motor.
 
 
@@ -102,7 +102,7 @@ Writer::Writer(const int* ids, const int nbrMotors, ControlTableItem::ControlTab
 ```
 
 The control item is the field to which the ```Writer``` object writes. Those fields are defined in the Dynamixel2Arduino library's ```actuactor.h``` header file. 
-For example, for position writing, the field is ```ControlTableItem::ControlTableItemIndex::GOAL_POSITION ```. Check the aforementioned header file or the Dynamixel SDK's documentation for the exhaustive list of fields.
+For example, for position writing, the field is ```ControlTableItem::GOAL_POSITION ```. Check the aforementioned header file or the Dynamixel SDK's documentation for the exhaustive list of fields.
 
 The constructor's arguments "hal" and "dxl" are *always* "m_hal" and "m_dxl", which are attributes of ```BaseRobot``` (there's no need to concern yourself with those more).
 
@@ -114,7 +114,7 @@ All of this results in the following initialization of a ```Writer``` object han
 Robot::Robot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version)
 : KMR_dxluC::BaseRobot(ids, nbrMotors, baudrate, protocol_version)
 {
-    positionWriter = new KMR_dxluC::Writer(ids, nbrMotors, ControlTableItem::ControlTableItemIndex::GOAL_POSITION, m_hal, m_dxl);
+    positionWriter = new KMR_dxluC::Writer(ids, nbrMotors, ControlTableItem::GOAL_POSITION, m_hal, m_dxl);
 }
 ```
 
@@ -151,87 +151,39 @@ As a summary, after creating those functions and objects, you only need to call 
 
 ## Step 5: Reader handlers
 
-In order to fetch data from the motors' sensors (for example current position and temperature), a KMR::dxl::Reader object is required. It works extremely similarly to its Writer counterpart.
+In order to fetch data from the motors' sensors (for example current position and temperature), a ```KMR_dxluC::Reader``` object is required. It works extremely similarly to its ```Writer``` counterpart.
 
-When writing the read function, one needs to be careful about the order in which the control fields were written when declaring the Reader. \n
-The method KMR::dxl::Reader::syncRead stores the data received from motors into the Reader's attribute table "m_dataFromMotor", organized like this:
+A ```Reader```'s constructor takes the exact same arguments as a ```Writer```, with the "item" being the control field the ```Reader``` will be reading from. <br /> 
+The method used to actually read the values is ```read```, giving, for example in the case of getting the current motor position:
 
-|          | field1 | field2 | .... | field_n |
-|----------|--------|--------|------|---------|
-| id[0]    |        |        |      |         |
-| ...      |        |        |      |         |
-| id[last] |        |        |      |         |
-
-
-As such, if for example we wanted a Reader that reads present position and LED status, the declaration would be:
 ```cpp
-vector<KMR::dxl::Fields> reader_fields = {KMR::dxl::PRESENT_POS, KMR::dxl::LED};
-m_reader = new KMR::dxl::Reader(reader_fields, handlers_ids, portHandler_, packetHandler_, m_hal, 0);
+// robot.hpp
+
+class Robot : public KMR_dxluC::BaseRobot {
+public:
+    Robot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version);
+    void getPositions(float* positions);
+
+private:
+    KMR_dxluC::Reader *positionReader;
+};
 ```
 
-which means the present position data will be saved in the first column of "m_dataFromMotor" and the LED status in the second. \n
-As such, the reading function is:
 ```cpp
 // robot.cpp
-void Robot::readData(vector<int> ids, vector<float>& fbck_angles, vector<float>& fbck_leds)
+
+Robot::Robot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version)
+: KMR_dxluC::BaseRobot(ids, nbrMotors, baudrate, protocol_version)
 {
-    m_reader->syncRead(ids);
+    positionReader = new KMR_dxluC::Reader(ids, nbrMotors, ControlTableItem::PRESENT_POSITION, m_hal, m_dxl);
+}
 
-    for (int i=0; i<ids.size(); i++) {
-        fbck_angles[i] = m_reader->m_dataFromMotor[i][0];
-        fbck_leds[i] = m_reader->m_dataFromMotor[i][1];
-    }
-
+/**
+ * @brief       Read the motors' current positions 
+ * @param[out]  positions Current positions received from the motors [rad]
+ */
+void Robot::getPositions(float* positions)
+{
+    positionReader->read(positions);
 }
 ```
-
-## Note: multiturn reset
-The public method KMR::dxl::BaseRobot::resetMultiturnMotors resets the motors flagged as in need of a reset. It is inherited by the Robot class, and needs to be called only if the project contains multiturn motors. 
-
-It is up to the user where they want to call it. A good idea is to call it at the start of each control loop, before reading the sensor values. \n
-If wished, one can also add it for example at the end of the writing functions.
-
-> **Warning** <br> 
-> If the resetMultiturnMotors method is called at the end of the writing method, make sure the motors had enough time to execute the movement before calling the reset, such as by adding a short sleep time. If they are reset before they could execute the whole movement, it results in undefined behavior.
-
-
-# III. Create a Robot object
-
-Keeping the previous examples, a very basic project could look like this:
-```cpp
-// main.cpp
-
-KMR::dxl::Hal hal;
-
-char path_to_motor_config[] = "../config/motors_config.yaml";
-char path_to_KMR_dxl[] = "../KMR_dxl";
-
-std::vector<int> all_ids = hal.init(path_to_motor_config, path_to_KMR_dxl);
-
-// Create robot instance
-int baudrate = 1000000;
-Robot robot(all_ids, "/dev/ttyUSB0", baudrate, hal);
-
-// Feedback tables
-vector<float> fbck_angles(4);
-vector<float> fbck_leds(4);
-vector<float> goal_angles(4);
-vector<float> goal_leds(4);
-
-// Start the loop
-robot.enableMotors();
-
-while(1) {
-    // Only needed if there are multiturn motors
-    robot.resetMultiturnMotors();
-
-    robot.readData(all_ids, fbck_angles, fbck_leds);
-
-    // Send the feedback values to the controller and get the new
-    // goal values into goal_angles and goal_leds
-
-    robot.writeData(goal_angles, goal_leds, all_ids);
-
-    sleep(1);
-}
-``` 
