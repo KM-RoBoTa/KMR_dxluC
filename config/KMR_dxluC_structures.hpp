@@ -113,7 +113,6 @@ struct ControlTable {
     Field movingStatus;
     Field velocityTrajectory;
     Field positionTrajectory;
-    Field presentInputVoltage;
     Field externalPortData1;
     Field externalPortData2;
     Field externalPortData3;
@@ -207,7 +206,6 @@ struct ControlTable {
         movingStatus.length = UNDEF;
         velocityTrajectory.length = UNDEF;
         positionTrajectory.length = UNDEF;
-        presentInputVoltage.length = UNDEF;
         externalPortData1.length = UNDEF;
         externalPortData2.length = UNDEF;
         externalPortData3.length = UNDEF;

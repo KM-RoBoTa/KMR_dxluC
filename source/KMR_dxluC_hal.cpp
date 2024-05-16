@@ -217,7 +217,6 @@ Field Hal::getControlField(ControlTable motor, ControlTableItem::ControlTableIte
     case ControlTableItem::MOVING_STATUS:           field = motor.movingStatus;             break;
     case ControlTableItem::VELOCITY_TRAJECTORY:     field = motor.velocityTrajectory;       break;
     case ControlTableItem::POSITION_TRAJECTORY:     field = motor.positionTrajectory;       break;
-    case ControlTableItem::PRESENT_INPUT_VOLTAGE:   field = motor.presentInputVoltage;      break;
     case ControlTableItem::EXTERNAL_PORT_DATA_1:    field = motor.externalPortData1;        break;
     case ControlTableItem::EXTERNAL_PORT_DATA_2:    field = motor.externalPortData2;        break;
     case ControlTableItem::EXTERNAL_PORT_DATA_3:    field = motor.externalPortData3;        break;
