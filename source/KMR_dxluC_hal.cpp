@@ -11,6 +11,8 @@
  ******************************************************************************
  */
 
+#define DEBUG_SERIAL Serial
+
 #define POS_OFFSET_DEFAULT 3.14159265358979323846264338327950288 // M_PI
 #define POS_OFFSET_AX_12A 2.61799387799 // 130 degrees in radians 
 
@@ -25,12 +27,10 @@ namespace KMR_dxluC
  */
 Hal::Hal(int protocol_version)
 {
-    //m_DEBUG_SERIAL = DEBUG_SERIAL;
-
     if (protocol_version == 1 || protocol_version == 2)
         m_protocol = protocol_version;
     else {
-        //m_DEBUG_SERIAL.println("Error! This protocol does not exist. Exiting...");
+        DEBUG_SERIAL.println("Error! This protocol does not exist. Exiting...");
         exit(1);
     }
 
@@ -83,7 +83,7 @@ ControlTable Hal::getControlTable(int modelNumber)
     case MODEL_NBR_AX_12A:
         motor = *AX_12A; break;
     default:
-        //m_DEBUG_SERIAL.println("Error: this model is unknown");
+        DEBUG_SERIAL.println("Error: this model is unknown");
         exit(1);
     }
 
@@ -224,12 +224,12 @@ Field Hal::getControlField(ControlTable motor, ControlTableItem::ControlTableIte
     case ControlTableItem::EXTERNAL_PORT_DATA_4:    field = motor.externalPortData4;        break;
 
     default:
-        //m_DEBUG_SERIAL.println("Error: this field is unknown");
+        DEBUG_SERIAL.println("Error: this field is unknown");
         exit(1);
     }    
 
     if (field.length == UNDEF) {
-        //m_DEBUG_SERIAL.println("Error: this field does not exist for this motor or protocol!");
+        DEBUG_SERIAL.println("Error: this field does not exist for this motor or protocol!");
         exit(1);
     }
 
