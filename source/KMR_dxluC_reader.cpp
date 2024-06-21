@@ -52,7 +52,16 @@ Reader::Reader(const int* ids, const int nbrMotors, ControlTableItem::ControlTab
             m_readerInfo.p_xels[i].p_recv_buf = (uint8_t*)&m_fbck_params[i];
         }
     }
-} 
+}
+
+Reader::~Reader()
+{
+    if (m_canUseBulkRead) {
+        delete[] m_fbck_params;
+        delete[] m_readerInfo.packet.p_buf;
+        delete[] m_readerInfo.p_xels;
+    }
+}
 
 /**
  * @brief       Read the control field of all the motors handled by this Reader

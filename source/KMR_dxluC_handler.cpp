@@ -46,7 +46,15 @@ Handler::Handler(const int* ids, const int nbrMotors, ControlTableItem::ControlT
 
     checkMotorCompatibility();
 }
-   
+
+Handler::~Handler()
+{
+    // Free dynamically allocated memory to heap
+    delete[] m_ids;
+    delete[] m_models;
+    delete[] m_units;
+    delete[] m_offsets;
+}
 
 /**
  * @brief       Check if the motors are compatible (address + byte size of the handler's control field)

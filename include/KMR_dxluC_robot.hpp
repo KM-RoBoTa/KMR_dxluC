@@ -31,9 +31,10 @@ namespace KMR_dxluC
 class BaseRobot {
 public:
     int m_nbrMotors;
-    Writer* EEPROM_writer;
+    Writer* m_EEPROM_writer = nullptr;
 
     BaseRobot(const int* ids, const int nbrMotors, const int baudrate, const int protocol_version);
+    ~BaseRobot();
     void enableMotors();
     void disableMotors();
     void enableMotor(int id);
@@ -47,13 +48,13 @@ public:
     void setReturnTime(float* returnTimes);
 
 protected:
-    Dynamixel2Arduino* m_dxl;
-    Hal* m_hal;
+    Dynamixel2Arduino* m_dxl = nullptr;
+    Hal* m_hal = nullptr;
 
 private:
-    int* m_ids;
+    int* m_ids = nullptr;
     int m_protocolVersion;
-    int* m_modelNumbers;
+    int* m_modelNumbers = nullptr;
 
     void initMotors(const int baudrate, const int protocol_version);
     void pingMotors();

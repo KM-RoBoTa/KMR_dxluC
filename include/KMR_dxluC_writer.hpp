@@ -44,7 +44,6 @@ public:
     {
         int32_t parameter;
         ParamForSyncWriteInst_t syncWriteParams;
-        Field field;
 
         // Prepare the parameters required by syncWrite
         syncWriteParams.addr = m_addr;

@@ -32,18 +32,19 @@ namespace KMR_dxluC
 class Handler {
 public:
     Handler(const int* ids, const int nbrMotors, ControlTableItem::ControlTableItemIndex item, Hal* hal, Dynamixel2Arduino* dxl);
+    ~Handler();
 
 protected:
-    int* m_ids;
-    int* m_models;
+    int* m_ids = nullptr;
+    int* m_models = nullptr;
     int m_nbrMotors;
     ControlTableItem::ControlTableItemIndex m_item;
-    Hal* m_hal;
+    Hal* m_hal = nullptr;
 
-    Dynamixel2Arduino* m_dxl;
+    Dynamixel2Arduino* m_dxl = nullptr;
     int m_addr, m_length;
-    float* m_offsets;
-    float* m_units;
+    float* m_offsets = nullptr;
+    float* m_units = nullptr;
 
     void checkMotorCompatibility();
 

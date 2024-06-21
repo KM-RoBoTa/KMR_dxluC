@@ -47,6 +47,14 @@ Hal::Hal(int protocol_version)
     }
 }
 
+Hal::~Hal()
+{
+    // Free dynamically allocated memory to heap
+    delete MX_64;
+    delete MX_106;
+    delete AX_12A;
+}
+
 
 /**
  * @brief       Initialize the Hal - called by BaseRobot in its cstr

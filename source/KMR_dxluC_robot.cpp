@@ -32,7 +32,6 @@
     #define DXL_SERIAL   Serial1 // Serial 3 for OpenCM9.04 EXP Board's DXL port Serial. (Serial1 for the DXL port on the OpenCM 9.04 board)
     #define DEBUG_SERIAL Serial
     const int DXL_DIR_PIN = 28; //22 for OpenCM9.04 EXP Board's DIR PIN. (28 for the DXL port on the OpenCM 9.04 board)
-    #define DEFAULT_BAUDRATE 57600
 #elif defined(ARDUINO_OpenCR) // When using official ROBOTIS board with DXL circuit.
     // For OpenCR, there is a DXL Power Enable pin, so you must initialize and control it.
     // Reference link : https://github.com/ROBOTIS-GIT/OpenCR/blob/master/arduino/opencr_arduino/opencr/libraries/DynamixelSDK/src/dynamixel_sdk/port_handler_arduino.cpp#L78
@@ -49,6 +48,8 @@
     #define DEBUG_SERIAL Serial
     const int DXL_DIR_PIN = 2; // DYNAMIXEL Shield DIR PIN
 #endif
+
+#define DEFAULT_BAUDRATE 57600
 
 namespace KMR_dxluC
 {
@@ -79,6 +80,13 @@ BaseRobot::BaseRobot(const int* ids, const int nbrMotors, const int baudrate, co
     DEBUG_SERIAL.println("Base robot created");
 }
 
+BaseRobot::~BaseRobot()
+{
+    delete[] m_hal;
+    delete[] m_ids;
+    delete[] m_modelNumbers;
+    delete m_dxl;
+}
 
 /**
  * @brief       Initialize the motors
@@ -202,12 +210,16 @@ void BaseRobot::disableMotor(int id)
 void BaseRobot::setMinAngles(float* minAngles)
 {
     if (m_protocolVersion == 1)
-        EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::CW_ANGLE_LIMIT, m_hal, m_dxl);
+        m_EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::CW_ANGLE_LIMIT, m_hal, m_dxl);
     else
-        EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MIN_POSITION_LIMIT, m_hal, m_dxl);
+        m_EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MIN_POSITION_LIMIT, m_hal, m_dxl);
 
-    EEPROM_writer->write(minAngles);
+    m_EEPROM_writer->write(minAngles);
     delay(30);
+
+    // Free the memory
+    delete m_EEPROM_writer;
+    m_EEPROM_writer = nullptr;
 }
 
 /**
@@ -217,12 +229,16 @@ void BaseRobot::setMinAngles(float* minAngles)
 void BaseRobot::setMaxAngles(float* maxAngles)
 {
     if (m_protocolVersion == 1)
-        EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::CCW_ANGLE_LIMIT, m_hal, m_dxl);
+        m_EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::CCW_ANGLE_LIMIT, m_hal, m_dxl);
     else
-        EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MAX_POSITION_LIMIT, m_hal, m_dxl);
+        m_EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MAX_POSITION_LIMIT, m_hal, m_dxl);
 
-    EEPROM_writer->write(maxAngles);
+    m_EEPROM_writer->write(maxAngles);
     delay(30);
+
+    // Free the memory
+    delete m_EEPROM_writer;
+    m_EEPROM_writer = nullptr;
 }
 
 /**
@@ -231,10 +247,14 @@ void BaseRobot::setMaxAngles(float* maxAngles)
  */
 void BaseRobot::setMinVoltages(float* minVoltages)
 {
-    EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MIN_VOLTAGE_LIMIT, m_hal, m_dxl);
+    m_EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MIN_VOLTAGE_LIMIT, m_hal, m_dxl);
 
-    EEPROM_writer->write(minVoltages);
+    m_EEPROM_writer->write(minVoltages);
     delay(30);
+
+    // Free the memory
+    delete m_EEPROM_writer;
+    m_EEPROM_writer = nullptr;
 }
 
 /**
@@ -243,10 +263,14 @@ void BaseRobot::setMinVoltages(float* minVoltages)
  */
 void BaseRobot::setMaxVoltages(float* maxVoltages)
 {
-    EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MAX_VOLTAGE_LIMIT, m_hal, m_dxl);
+    m_EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MAX_VOLTAGE_LIMIT, m_hal, m_dxl);
 
-    EEPROM_writer->write(maxVoltages);
+    m_EEPROM_writer->write(maxVoltages);
     delay(30);
+
+    // Free the memory
+    delete m_EEPROM_writer;
+    m_EEPROM_writer = nullptr;
 }
 
 
@@ -258,14 +282,18 @@ void BaseRobot::setMaxVoltages(float* maxVoltages)
 void BaseRobot::setMaxTorques(float* maxTorques)
 {
     if (m_protocolVersion == 1)  {
-        EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MAX_TORQUE, m_hal, m_dxl);
-        EEPROM_writer->write(maxTorques);
+        m_EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::MAX_TORQUE, m_hal, m_dxl);
+        m_EEPROM_writer->write(maxTorques);
         delay(30);
     }
     else {
         DEBUG_SERIAL.print("Error! Max torque setting is not supported in protocol 2. Exiting....");
         exit(1);
     }
+
+    // Free the memory
+    delete m_EEPROM_writer;
+    m_EEPROM_writer = nullptr;
 }
 
 /** 
@@ -293,10 +321,14 @@ void BaseRobot::setOperatingModes(int* modes)
  */
 void BaseRobot::setReturnTime(float* returnTimes)
 {
-    EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::RETURN_DELAY_TIME, m_hal, m_dxl);
+    m_EEPROM_writer = new Writer(m_ids, m_nbrMotors, ControlTableItem::RETURN_DELAY_TIME, m_hal, m_dxl);
 
-    EEPROM_writer->write(returnTimes);
+    m_EEPROM_writer->write(returnTimes);
     delay(30);    
+
+    // Free the memory
+    delete m_EEPROM_writer;
+    m_EEPROM_writer = nullptr;
 }
 
 }

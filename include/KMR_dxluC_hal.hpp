@@ -31,9 +31,9 @@ class Hal {
 
 public:
     Hal(int protocol_version);
+    ~Hal();
     void init(int* ids, int nbrMotors, int* models);
     int m_protocol;
-    //USBSerial m_DEBUG_SERIAL;
 
     ControlTable getControlTable(int modelNumber);
     Field getControlField(ControlTable motor, ControlTableItem::ControlTableItemIndex item);
@@ -42,13 +42,13 @@ public:
     float getPositionOffset(int modelNumber);
 
 private:
-    ControlTable* MX_64;
-    ControlTable* MX_106;
-    ControlTable* AX_12A;
+    ControlTable* MX_64 = nullptr;
+    ControlTable* MX_106 = nullptr;
+    ControlTable* AX_12A = nullptr;
     
-    int* m_ids;
+    int* m_ids = nullptr;
     int m_nbrMotors;
-    int* m_models;
+    int* m_models = nullptr;
 
 };
 
