@@ -39,11 +39,13 @@ Hal::Hal(int protocol_version)
         MX_64 = new MX_64_P1();
         MX_106 = new MX_106_P1();
         AX_12A = new AX_12A_P1();
+        MX_28 = new MX_28_P1();
     }
     else {
         MX_64 = new MX_64_P2();
         MX_106 = new MX_106_P2();
         AX_12A = new ControlTable(); // AX-12A does not support protocol 2
+        MX_28 = new MX_28_P2();
     }
 }
 
@@ -53,6 +55,7 @@ Hal::~Hal()
     delete MX_64;
     delete MX_106;
     delete AX_12A;
+    delete MX_28;
 }
 
 
@@ -90,6 +93,10 @@ ControlTable Hal::getControlTable(int modelNumber)
         motor = *MX_106; break;
     case MODEL_NBR_AX_12A:
         motor = *AX_12A; break;
+    case MODEL_NBR_MX_28_1:
+        motor = *MX_28; break;
+    case MODEL_NBR_MX_28_2:
+        motor = *MX_28; break;
     default:
         DEBUG_SERIAL.println("Error: this model is unknown");
         exit(1);

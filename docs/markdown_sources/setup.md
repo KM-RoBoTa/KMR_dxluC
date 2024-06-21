@@ -42,7 +42,7 @@ In the source code, only one header needs to be included (highly recommended to 
 Those steps explain how to add a new motor model to the library:
 1. In ```config/control_tables.hpp```, create the control tables of that model for both protocols. Add the model numbers to the list of defines on top, for both protocols.
 2. In ```include/hal.hpp```, add a new private attribute for that model
-3. In ```include/hal.cpp```, in the constructor, initialize the newly created attribute to the correct control table
+3. In ```include/hal.cpp```, in the constructor, initialize the newly created attribute to the correct control table. Update the destructor as well.
 4. Still in ```include/hal.cpp```, in the method ```getControlTable```, update the switch operator. 
 
 Next: how to [use](use.md)

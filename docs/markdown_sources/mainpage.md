@@ -38,3 +38,4 @@ This code is under MIT licence: https://opensource.org/licenses/MIT
 - MX-64
 - MX-106
 - AX-12A
+- MX-28

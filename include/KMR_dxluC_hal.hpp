@@ -45,6 +45,7 @@ private:
     ControlTable* MX_64 = nullptr;
     ControlTable* MX_106 = nullptr;
     ControlTable* AX_12A = nullptr;
+    ControlTable* MX_28 = nullptr;
     
     int* m_ids = nullptr;
     int m_nbrMotors;
