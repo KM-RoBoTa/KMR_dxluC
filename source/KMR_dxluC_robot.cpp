@@ -104,17 +104,19 @@ void BaseRobot::initMotors(const int baudrate, const int protocol_version)
 
 
 /**
- * @brief       Ping all motors to check the communication is working
+ * @brief   Ping all motors to check the communication is working
+ * @note    The OpenRB-150 board does not recognize some motors when pinging them.
+ *          The end condition is thus based on model scanning instead of pinging
  */
 void BaseRobot::pingMotors()
 {
-    bool retval;
+    int model = 0xFFFF;
     
     for (int i=0; i<m_nbrMotors; i++) {
-        retval = m_dxl->ping(m_ids[i]);
+        model = m_dxl->getModelNumber(m_ids[i]);
 
-        if(retval == true) {
-            m_modelNumbers[i] = m_dxl->getModelNumber(m_ids[i]);
+        if(model =! 0xFFFF) {
+            m_modelNumbers[i] = model;
             DEBUG_SERIAL.print("Ping succeeded for id ");
             DEBUG_SERIAL.print(m_ids[i]);
             DEBUG_SERIAL.print(", model number: ");
