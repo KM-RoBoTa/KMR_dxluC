@@ -115,7 +115,7 @@ void BaseRobot::pingMotors()
     for (int i=0; i<m_nbrMotors; i++) {
         model = m_dxl->getModelNumber(m_ids[i]);
 
-        if(model =! 0xFFFF) {
+        if(model != 0xFFFF) {
             m_modelNumbers[i] = model;
             DEBUG_SERIAL.print("Ping succeeded for id ");
             DEBUG_SERIAL.print(m_ids[i]);
