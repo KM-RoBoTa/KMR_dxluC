@@ -43,7 +43,7 @@ Reader::Reader(const int* ids, const int nbrMotors, ControlTableItem::ControlTab
         m_readerInfo.packet.p_buf = new uint8_t[BUFFER_SIZE]();
         m_readerInfo.packet.buf_capacity = BUFFER_SIZE;
         m_readerInfo.packet.is_completed = false;
-        m_readerInfo.p_xels = new XELInfoBulkRead_t[nbrMotors]();
+        m_readerInfo.p_xels = new DYNAMIXEL::XELInfoBulkRead_t[nbrMotors]();
 
         for (int i=0; i<nbrMotors; i++) {
             m_readerInfo.p_xels[i].addr = (uint16_t) m_addr;
